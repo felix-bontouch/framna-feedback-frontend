@@ -1,5 +1,3 @@
-import { getDateFormat } from './helper'
-import { htmlUtils } from './html-utils'
 import {
   FieldKindEnum,
   FormField,
@@ -7,7 +5,11 @@ import {
   QUESTION_FIELD_KINDS,
   Validation
 } from '@heyform-inc/shared-types-enums'
+
+import { htmlUtils } from './html-utils'
 import { helper } from '@heyform-inc/utils'
+
+import { getDateFormat } from './helper'
 
 export interface FieldsToValidateRules
   extends FormField,
@@ -98,12 +100,7 @@ function convert(field: FormField): FieldsToValidateRules {
     rule.format = getDateFormat(field.properties!.format!, field.properties?.allowTime)
   }
 
-  // Payment
-  if (helper.isNumeric(String(field.properties?.price))) {
-    rule.price = field.properties!.price
-  }
-
-  // Rating, payment and opinion_scale
+  // Rating and opinion_scale
   if (
     helper.isValid(field.properties?.total) &&
     helper.isNumeric(String(field.properties?.total), { no_symbols: true })

@@ -14,10 +14,7 @@ export enum RandomType {
   ALPHANUMERIC
 }
 
-export function random(
-  len = length * 2,
-  type = RandomType.ALPHANUMERIC
-): string {
+export function random(len = length * 2, type = RandomType.ALPHANUMERIC): string {
   let alphabet: string = numeric + lower + upper
 
   switch (type) {

@@ -1,4 +1,4 @@
-import { hs, toSecond, toMillisecond } from '../src'
+import { hs, toMillisecond, toSecond } from '../src'
 
 test('parse 5 seconds', () => {
   expect(hs('5s')).toBe(5)

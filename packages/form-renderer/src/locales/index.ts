@@ -1,14 +1,14 @@
+import cs from './cs'
 import de from './de'
 import en from './en'
+import es from './es'
 import fr from './fr'
 import ja from './ja'
 import pl from './pl'
+import ptBr from './pt-br'
 import tr from './tr'
 import zhCn from './zh-cn'
 import zhTw from './zh-tw'
-import es from './es'
-import ptBr from './pt-br'
-import cs from './cs'
 
 export const locales: Record<string, any> = {
   en: {
@@ -29,7 +29,7 @@ export const locales: Record<string, any> = {
   pl: {
     translation: pl
   },
-	'pt-br': {
+  'pt-br': {
     translation: ptBr
   },
   tr: {

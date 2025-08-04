@@ -1,16 +1,9 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
 import { GeeTest, GeeTestValidateOptions, GeeTestValidateResponse } from 'gt4-node-sdk'
+import { Model } from 'mongoose'
 
-import {
-  RandomType,
-  helper,
-  hs,
-  isDateExpired,
-  parseNumber,
-  random,
-  timestamp
-} from '@heyform-inc/utils'
-
+import { RedisService } from './redis.service'
 import {
   COOKIE_LOGIN_IN_NAME,
   COOKIE_SESSION_NAME,
@@ -25,14 +18,31 @@ import {
   VERIFICATION_CODE_EXPIRE,
   VERIFICATION_CODE_LIMIT
 } from '@environments'
+import {
+  RandomType,
+  helper,
+  hs,
+  isDateExpired,
+  parseNumber,
+  random,
+  timestamp
+} from '@heyform-inc/utils'
+import { UserActivityKindEnum, UserActivityModel } from '@model'
 import { aesDecryptObject, aesEncryptObject } from '@utils'
+import { UserAgent } from '@utils'
 
-import { RedisService } from './redis.service'
+interface UserActivity {
+  kind: UserActivityKindEnum
+  userId: string
+  deviceId: string
+  ip: string
+  userAgent: UserAgent
+}
 
 interface LoginOptions {
   res: any
   userId: string
-  browserId: string
+  deviceId: string
 }
 
 interface AttemptsCheckOptions {
@@ -47,7 +57,11 @@ const DEFAULT_ATTEMPTS_OPTIONS = {
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly redisService: RedisService) {}
+  constructor(
+    @InjectModel(UserActivityModel.name)
+    private readonly userActivityModel: Model<UserActivityModel>,
+    private readonly redisService: RedisService
+  ) {}
 
   private static sessionKey(userId: string): string {
     return `sess:${userId}`
@@ -59,22 +73,21 @@ export class AuthService {
       key
     })
 
-    return Object.keys(result as Object)
+    return Object.keys(result as object)
   }
 
-  async login({ res, userId, browserId }: LoginOptions): Promise<void> {
+  async login({ res, userId, deviceId }: LoginOptions): Promise<void> {
     const maxLoginNum = 20
     const loginAt = timestamp()
     const key = AuthService.sessionKey(userId)
 
     await this.redisService.hset({
       key,
-      field: browserId,
+      field: deviceId,
       value: loginAt,
       duration: SESSION_MAX_AGE
     })
 
-    // If more than maxLoginNum devices are logged in, delete earlier sessions
     const devices = await this.devices(userId)
     const len = devices.length
 
@@ -87,7 +100,7 @@ export class AuthService {
 
     this.setSession(res, {
       loginAt: timestamp(),
-      browserId,
+      deviceId,
       id: userId
     })
     res.cookie(COOKIE_LOGIN_IN_NAME, true, CookieOptionsFactory())
@@ -106,11 +119,28 @@ export class AuthService {
     } catch (_) {}
   }
 
-  async isExpired(userId: string, browserId: string): Promise<boolean> {
+  removeSession(res: any): void {
+    res.cookie(
+      COOKIE_SESSION_NAME,
+      '',
+      SessionOptionsFactory({
+        maxAge: 0
+      })
+    )
+    res.cookie(
+      COOKIE_LOGIN_IN_NAME,
+      '',
+      CookieOptionsFactory({
+        maxAge: 0
+      })
+    )
+  }
+
+  async isExpired(userId: string, deviceId: string): Promise<boolean> {
     const key = `sess:${userId}`
     const result = await this.redisService.hget({
       key,
-      field: browserId
+      field: deviceId
     })
     const loginAt = Number(result)
 
@@ -121,16 +151,33 @@ export class AuthService {
     return isDateExpired(loginAt, timestamp(), SESSION_MAX_AGE)
   }
 
-  async renew(userId: string, browserId: string): Promise<void> {
+  async renew(userId: string, deviceId: string): Promise<void> {
     const key = `sess:${userId}`
     const now = timestamp()
 
     await this.redisService.hset({
       key,
-      field: browserId,
+      field: deviceId,
       value: now,
       duration: SESSION_MAX_AGE
     })
+  }
+
+  async createUserActivity(userActivity: UserActivity): Promise<UserActivityModel> {
+    return this.userActivityModel.create(userActivity as any)
+  }
+
+  async failRemaining(key: string, max: number): Promise<number> {
+    const result = await this.redisService.get(key)
+    const amount = parseNumber(result, 0)
+    return max - amount
+  }
+
+  async failIncrease(key: string): Promise<void> {
+    await this.redisService.multi([
+      ['incr', key],
+      ['expire', key, String(hs('15m'))]
+    ])
   }
 
   async attemptsCheck(
@@ -174,7 +221,7 @@ export class AuthService {
 
     // Delete the oldest one if the number of code is exceeded the VERIFICATION_CODE_LIMIT
     const result = await this.redisService.hget({ key })
-    const fields = Object.keys(result as Object)
+    const fields = Object.keys(result as object)
     const count = fields.length
 
     if (count > VERIFICATION_CODE_LIMIT) {

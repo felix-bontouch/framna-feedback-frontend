@@ -1,30 +1,26 @@
-import { BadRequestException, UseGuards } from '@nestjs/common'
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
-
-import { applyLogicToFields, fieldValuesToAnswers, flattenFields } from '@heyform-inc/answer-utils'
 import {
   Answer,
   CaptchaKindEnum,
-  FieldKindEnum,
   SubmissionCategoryEnum,
   SubmissionStatusEnum,
   Variable
 } from '@heyform-inc/shared-types-enums'
-import { helper, timestamp } from '@heyform-inc/utils'
+import { BadRequestException, UseGuards } from '@nestjs/common'
 
 import { CompleteSubmissionInput, CompleteSubmissionType } from '@graphql'
 import { EndpointAnonymousIdGuard } from '@guard'
+import { applyLogicToFields, fieldValuesToAnswers, flattenFields } from '@heyform-inc/answer-utils'
+import { helper, timestamp } from '@heyform-inc/utils'
+import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import {
   EndpointService,
   FormReportService,
   FormService,
   IntegrationService,
-  PaymentService,
   SubmissionIpLimitService,
   SubmissionService
 } from '@service'
-import { GqlClient } from '@utils'
-import { ClientInfo } from '@utils'
+import { ClientInfo, GqlClient } from '@utils'
 
 @Resolver()
 @UseGuards(EndpointAnonymousIdGuard)
@@ -35,8 +31,7 @@ export class CompleteSubmissionResolver {
     private readonly submissionService: SubmissionService,
     private readonly submissionIpLimitService: SubmissionIpLimitService,
     private readonly formReportService: FormReportService,
-    private readonly integrationService: IntegrationService,
-    private readonly paymentService: PaymentService
+    private readonly integrationService: IntegrationService
   ) {}
 
   @Mutation(returns => CompleteSubmissionType)
@@ -160,35 +155,13 @@ export class CompleteSubmissionResolver {
       status
     })
 
-    // Payment
-    const answer = answers.find(a => a.kind === FieldKindEnum.PAYMENT)
     const result: CompleteSubmissionType = {}
-
-    if (helper.isValid(answer) && helper.isValid(form.stripeAccount)) {
-      result.clientSecret = await this.paymentService.createPaymentIntent({
-        amount: answer.value.amount,
-        currency: answer.value.currency,
-        stripeAccountId: form.stripeAccount.accountId,
-        metadata: {
-          submissionId,
-          fieldId: answer.id
-        }
-      })
-
-      await this.submissionService.updateAnswer(submissionId, {
-        ...answer,
-        value: {
-          ...answer.value,
-          clientSecret: result.clientSecret
-        }
-      })
-    }
 
     // Form report Queue
     this.formReportService.addQueue(form.id)
 
     // Integration Queue
-    this.integrationService.addQueue(form.id, submissionId)
+    this.integrationService.addQueue(form, submissionId)
 
     return result
   }

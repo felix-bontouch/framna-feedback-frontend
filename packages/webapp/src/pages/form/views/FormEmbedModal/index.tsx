@@ -1,14 +1,15 @@
-import { helper } from '@heyform-inc/utils'
 import { IconCode, IconX } from '@tabler/icons-react'
 import { observer } from 'mobx-react-lite'
 import { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useParam, useVisible } from '@/utils'
+import { helper } from '@heyform-inc/utils'
+
 import { CopyButton, FullpageIcon, ModalIcon, PopupIcon, StandardIcon } from '@/components'
-import { Button, Modal, Select, useLockBodyScroll } from '@/components/ui'
+import { Button, Modal, Select, useLockBodyScroll } from '@/components'
 import { HOMEPAGE_URL } from '@/consts'
 import { useStore } from '@/store'
-import { useParam, useVisible } from '@/utils'
 
 import { EmbedPreview } from './EmbedPreview'
 import { FullpageSettings } from './FullpageSettings'
@@ -46,7 +47,7 @@ export const FormEmbedModal: FC = observer(() => {
 
   const [visible, openModal, closeModal] = useVisible()
 
-	const { t } = useTranslation()
+  const { t } = useTranslation()
 
   function handleClose() {
     formStore.resetEmbed()
@@ -143,12 +144,8 @@ ${attributes.join('\n')}
 
       <Modal visible={visible} onClose={closeModal} showCloseIcon>
         <div>
-          <h1 className="text-lg font-medium leading-6 text-slate-900">
-            {t('share.addHeyform')}
-          </h1>
-          <p className="text-sm text-slate-600">
-            {t('share.embedCodeText')}
-          </p>
+          <h1 className="text-lg font-medium leading-6 text-slate-900">{t('share.addHeyform')}</h1>
+          <p className="text-sm text-slate-600">{t('share.embedCodeText')}</p>
         </div>
         <pre className="my-6 overflow-x-auto rounded bg-slate-700 p-4 text-[13px] text-white">
           <code>{code}</code>

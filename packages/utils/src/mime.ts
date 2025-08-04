@@ -1,5 +1,5 @@
-import db from './mime-db.json'
 import { isEmpty, isString } from './helper'
+import db from './mime-db.json'
 
 export function mime(path: string) {
   if (isEmpty(path) || !isString(path) || path.length > 100) {

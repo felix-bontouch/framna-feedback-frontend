@@ -1,9 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
 
 import { Auth, User } from '@decorator'
 import { JoinTeamInput } from '@graphql'
 import { TeamRoleEnum, UserModel } from '@model'
+import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import { MailService, TeamService, UserService } from '@service'
 
 @Resolver()

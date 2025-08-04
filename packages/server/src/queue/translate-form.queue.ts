@@ -1,15 +1,14 @@
+import { CHOICES_FIELD_KINDS } from '@heyform-inc/shared-types-enums'
 import { Process, Processor } from '@nestjs/bull'
 import { Job } from 'bull'
+import { OpenAI } from 'openai'
 
+import { OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_GPT_MODEL } from '@environments'
+import { htmlUtils } from '@heyform-inc/answer-utils'
+import { helper } from '@heyform-inc/utils'
 import { FormService } from '@service'
 
 import { BaseQueue } from './base.queue'
-import { helper } from '@heyform-inc/utils'
-import { htmlUtils } from '@heyform-inc/answer-utils'
-
-import { OpenAI } from 'openai'
-import { OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_GPT_MODEL } from '@environments'
-import { CHOICES_FIELD_KINDS } from '@heyform-inc/shared-types-enums'
 
 interface TranslateFormQueueJob {
   formId: string
@@ -20,7 +19,7 @@ const LANGUAGES = {
   en: 'English',
   de: 'German',
   fr: 'French',
-	pl: 'Polish',
+  pl: 'Polish',
   tr: 'Turkish',
   'zh-cn': 'Simplified Chinese',
   'zh-tw': 'Traditional Chinese'
@@ -33,7 +32,7 @@ export class TranslateFormQueue extends BaseQueue {
   }
 
   @Process()
-  async generateReport(job: Job<TranslateFormQueueJob>): Promise<any> {
+  async process(job: Job<TranslateFormQueueJob>): Promise<any> {
     const { formId, language } = job.data
     const form = await this.formService.findById(formId)
 

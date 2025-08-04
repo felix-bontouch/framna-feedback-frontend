@@ -1,12 +1,11 @@
 import { BadRequestException } from '@nestjs/common'
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
-
-import { helper } from '@heyform-inc/utils'
 
 import { Auth, Team, TeamGuard, User } from '@decorator'
 import { APP_HOMEPAGE_URL } from '@environments'
 import { InviteMemberInput } from '@graphql'
+import { helper } from '@heyform-inc/utils'
 import { TeamModel, UserModel } from '@model'
+import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import { MailService, TeamService, UserService } from '@service'
 
 @Resolver()

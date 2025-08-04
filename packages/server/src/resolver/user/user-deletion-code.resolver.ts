@@ -1,7 +1,6 @@
-import { Query, Resolver } from '@nestjs/graphql'
-
 import { Auth, User } from '@decorator'
 import { UserModel } from '@model'
+import { Query, Resolver } from '@nestjs/graphql'
 import { AuthService, MailService } from '@service'
 
 @Resolver()

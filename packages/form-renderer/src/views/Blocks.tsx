@@ -2,6 +2,8 @@ import { FieldKindEnum, FormField } from '@heyform-inc/shared-types-enums'
 import type { FC } from 'react'
 import { useEffect, useMemo } from 'react'
 
+import { useTranslation } from '../utils'
+
 import { Address } from '../blocks/Address'
 import { Country } from '../blocks/Country'
 import { Date } from '../blocks/Date'
@@ -15,9 +17,7 @@ import { LongText } from '../blocks/LongText'
 import { MultipleChoice } from '../blocks/MultipleChoice'
 import { Number } from '../blocks/Number'
 import { OpinionScale } from '../blocks/OpinionScale'
-import { Payment } from '../blocks/Payment'
 import { PhoneNumber } from '../blocks/PhoneNumber'
-import { PictureChoice } from '../blocks/PictureChoice'
 import { Rating } from '../blocks/Rating'
 import { ShortText } from '../blocks/ShortText'
 import { Signature } from '../blocks/Signature'
@@ -27,7 +27,6 @@ import { Website } from '../blocks/Website'
 import { Welcome } from '../blocks/Welcome'
 import { YesNo } from '../blocks/YesNo'
 import { useStore } from '../store'
-import { useTranslation } from '../utils'
 import { Footer } from './Footer'
 import { Header } from './Header'
 
@@ -66,9 +65,6 @@ function getBlock(field: FormField, blockIndex?: number) {
     case FieldKindEnum.PHONE_NUMBER:
       return <PhoneNumber key={field.id} field={field} />
 
-    case FieldKindEnum.PICTURE_CHOICE:
-      return <PictureChoice key={field.id} field={field} />
-
     case FieldKindEnum.RATING:
       return <Rating key={field.id} field={field} />
 
@@ -93,9 +89,6 @@ function getBlock(field: FormField, blockIndex?: number) {
     case FieldKindEnum.SHORT_TEXT:
       return <ShortText key={field.id} field={field} />
 
-    case FieldKindEnum.PAYMENT:
-      return <Payment key={field.id} field={field} paymentBlockIndex={blockIndex} />
-
     default:
       return <Statement key={field.id} field={field} />
   }
@@ -103,26 +96,10 @@ function getBlock(field: FormField, blockIndex?: number) {
 
 const Main: FC = () => {
   const { state } = useStore()
-  const paymentIndex = useMemo(
-    () => state.fields.findIndex(field => field.kind === FieldKindEnum.PAYMENT),
-    []
-  )
   const currentField = useMemo(
     () => getBlock(state.fields[state.scrollIndex!]),
     [state.scrollIndex]
   )
-
-  if (paymentIndex > -1) {
-    const paymentBlock = getBlock(state.fields[paymentIndex], paymentIndex)
-
-    return (
-      <>
-        {state.scrollIndex! < paymentIndex && currentField}
-        {paymentBlock}
-        {state.scrollIndex! > paymentIndex && currentField}
-      </>
-    )
-  }
 
   return currentField
 }

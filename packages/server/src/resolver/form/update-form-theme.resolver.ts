@@ -1,8 +1,6 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
-
-import { Auth, FormGuard, Team } from '@decorator'
+import { Auth, FormGuard } from '@decorator'
 import { UpdateFormThemeInput } from '@graphql'
-import { TeamModel } from '@model'
+import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import { FormService } from '@service'
 
 @Resolver()
@@ -10,20 +8,12 @@ import { FormService } from '@service'
 export class UpdateFormThemeResolver {
   constructor(private readonly formService: FormService) {}
 
-  /**
-   * Update form theme
-   *
-   * @param team
-   * @param input
-   */
   @Mutation(returns => Boolean)
   @FormGuard()
-  async updateFormTheme(
-    @Team() team: TeamModel,
-    @Args('input') input: UpdateFormThemeInput
-  ): Promise<boolean> {
+  async updateFormTheme(@Args('input') input: UpdateFormThemeInput): Promise<boolean> {
     return await this.formService.update(input.formId, {
       themeSettings: {
+        logo: input.logo,
         theme: input.theme
       }
     })

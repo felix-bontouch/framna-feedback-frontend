@@ -1,5 +1,6 @@
-import parser from './answer-parser'
 import { Answer, FieldKindEnum, QUESTION_FIELD_KINDS } from '@heyform-inc/shared-types-enums'
+
+import parser from './answer-parser'
 
 export function answersToHtml(answers: Answer[]): string {
   const html = answers
@@ -61,10 +62,6 @@ function parseHtmlAnswer(answer: Answer): string {
 
       case FieldKindEnum.INPUT_TABLE:
         value = parser.inputTable(answer)
-        break
-
-      case FieldKindEnum.PAYMENT:
-        value = parser.payment(answer)
         break
 
       default:

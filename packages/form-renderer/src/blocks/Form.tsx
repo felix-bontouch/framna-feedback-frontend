@@ -1,16 +1,11 @@
-import { applyLogicToFields, validateFields } from '@heyform-inc/answer-utils'
 import type { FormField } from '@heyform-inc/shared-types-enums'
-import { FieldKindEnum, NumberPrice } from '@heyform-inc/shared-types-enums'
-import { clone, helper } from '@heyform-inc/utils'
+import { FieldKindEnum } from '@heyform-inc/shared-types-enums'
 import { IconChevronRight } from '@tabler/icons-react'
-import Big from 'big.js'
 import clsx from 'clsx'
 import type { FormProps as RCFormProps } from 'rc-field-form'
 import RCForm, { Field, useForm } from 'rc-field-form'
 import { FC, ReactNode, useEffect, useMemo, useState } from 'react'
 
-import { Submit } from '../components'
-import { removeStorage, useStore } from '../store'
 import {
   getNavigateFieldId,
   sendMessageToParent,
@@ -19,6 +14,11 @@ import {
   useTranslation,
   validateLogicField
 } from '../utils'
+import { applyLogicToFields, validateFields } from '@heyform-inc/answer-utils'
+import { clone, helper } from '@heyform-inc/utils'
+
+import { Submit } from '../components'
+import { removeStorage, useStore } from '../store'
 
 interface FormProps extends RCFormProps {
   field: FormField
@@ -117,33 +117,8 @@ export const Form: FC<FormProps> = ({
         validateFields(fields, values)
         setLoading(true)
 
-        if (state.stripe) {
-          const paymentField = state.fields.find(f => f.kind === FieldKindEnum.PAYMENT)
-
-          if (paymentField) {
-            const value = values[paymentField.id]
-
-            if (helper.isValid(value)) {
-              const price = paymentField.properties?.price as NumberPrice
-              const currency = paymentField.properties?.currency
-
-              if (!helper.isValid(price?.value) || price.value <= 0 || !helper.isValid(currency)) {
-                values[paymentField.id] = undefined
-              } else {
-                values[paymentField.id] = {
-                  amount: Big(price.value).times(100).toNumber(),
-                  currency,
-                  billingDetails: {
-                    name: value.name
-                  }
-                }
-              }
-            }
-          }
-        }
-
         // Submit form
-        await state.onSubmit?.(values, isPartialSubmission, state.stripe)
+        await state.onSubmit?.(values, isPartialSubmission)
 
         if (helper.isTrue(state.query.hideAfterSubmit)) {
           sendMessageToParent('HIDE_EMBED_MODAL')

@@ -4,11 +4,11 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import * as cookieParser from 'cookie-parser'
 import * as rateLimit from 'express-rate-limit'
 import * as helmet from 'helmet'
+import { join } from 'path'
 import * as serveStatic from 'serve-static'
 
-import { helper, ms } from '@heyform-inc/utils'
-
 import { APP_LISTEN_HOSTNAME, APP_LISTEN_PORT, STATIC_DIR, VIEW_DIR } from '@environments'
+import { helper, ms } from '@heyform-inc/utils'
 import { Logger, hbs } from '@utils'
 
 import { AppModule } from './app.module'
@@ -29,6 +29,11 @@ async function bootstrap() {
   // Catch all exceptions
   app.useGlobalFilters(new AllExceptionsFilter())
 
+  app.enableCors({
+    origin: true,
+    credentials: true
+  })
+
   // Enable cookie
   app.use(cookieParser())
 
@@ -48,6 +53,14 @@ async function bootstrap() {
           res.setHeader('Content-Disposition', `attachment; filename="${attname}"`)
         }
       }
+    })
+  )
+
+  app.use(
+    '/static/upload',
+    serveStatic(join(process.cwd(), 'uploads'), {
+      maxAge: '30d',
+      extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif']
     })
   )
 

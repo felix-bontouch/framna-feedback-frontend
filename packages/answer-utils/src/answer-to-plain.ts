@@ -1,6 +1,8 @@
-import parser from './answer-parser'
 import { Answer, FieldKindEnum } from '@heyform-inc/shared-types-enums'
+
 import { helper } from '@heyform-inc/utils'
+
+import parser from './answer-parser'
 
 export function answersToPlain(answers: Answer[]): string {
   return answers
@@ -53,10 +55,6 @@ export function parsePlainAnswer(answer: Answer, livePreview = false): string {
 
     case FieldKindEnum.INPUT_TABLE:
       value = parser.inputTable(answer)
-      break
-
-    case FieldKindEnum.PAYMENT:
-      value = parser.payment(answer)
       break
 
     default:

@@ -1,4 +1,5 @@
 import type { FormTheme } from '@heyform-inc/shared-types-enums'
+
 import { alpha, helper, hexToRgb, isDarkColor } from '@heyform-inc/utils'
 
 export const SYSTEM_FONTS =
@@ -202,21 +203,4 @@ export function getThemeStyle(theme: FormTheme, query?: Record<string, any>): st
       : ''
   }
   `
-}
-
-export function getStripeElementStyle(theme: FormTheme) {
-  return {
-    base: {
-      color: theme.answerTextColor,
-      fontFamily: [theme.fontFamily, SYSTEM_FONTS].filter(Boolean).join(','),
-      fontSize: '24px',
-      fontSmoothing: 'antialiased',
-      '::placeholder': {
-        color: alpha(theme.answerTextColor!, 0.3)
-      }
-    },
-    invalid: {
-      color: '#dc2626'
-    }
-  }
 }

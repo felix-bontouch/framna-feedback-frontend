@@ -1,4 +1,4 @@
-import { parseJson, parseNumber, parseBool, htmlToText } from '../src'
+import { htmlToText, parseBool, parseJson, parseNumber } from '../src'
 
 test('json', () => {
   const value = parseJson('{"a": 1}')

@@ -1,9 +1,6 @@
 import { FormTheme } from '@heyform-inc/shared-types-enums'
-import { helper, qs, removeObjectNil } from '@heyform-inc/utils'
-import isMobilePhone from 'validator/lib/isMobilePhone'
 
-import { STRIPE_PUBLISHABLE_KEY } from '@/consts'
-import { getTheme, getThemeStyle } from '@/pages/form/views/FormComponents'
+import { helper, qs, removeObjectNil } from '@heyform-inc/utils'
 
 export function urlBuilder(prefix: string, query: Record<string, any>): string {
   return prefix + '?' + qs.stringify(removeObjectNil(query), { encode: true })
@@ -50,23 +47,6 @@ export function loadScript(
       loadScript(name, src, callback, attempts)
     }, attempts * 50)
   }
-}
-
-export function redirectToStripeCheckout(sessionId: string) {
-  return new Promise((resolve, reject) => {
-    loadScript('stripe-v3', 'https://js.stripe.com/v3/', err => {
-      if (err) {
-        return reject(err)
-      }
-
-      const stripe = (window as any).Stripe(STRIPE_PUBLISHABLE_KEY)
-
-      stripe.redirectToCheckout({
-        sessionId
-      })
-      resolve(null)
-    })
-  })
 }
 
 export function insertStyle(id: string, style: string) {

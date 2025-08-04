@@ -1,4 +1,5 @@
-import { test, expect } from 'vitest'
+import { expect, test } from 'vitest'
+
 import { helper } from '../src'
 
 test("' ' is empty", () => {
@@ -251,9 +252,7 @@ test('HTTPS://WWW.FOOBAR.COM/ is url', () => {
 })
 
 test('http://xn------eddceddeftq7bvv7c4ke4c.xn--p1ai is url', () => {
-  expect(helper.isURL('http://xn------eddceddeftq7bvv7c4ke4c.xn--p1ai')).toBe(
-    true
-  )
+  expect(helper.isURL('http://xn------eddceddeftq7bvv7c4ke4c.xn--p1ai')).toBe(true)
 })
 
 test('test.com?ref=http://test2.com is url', () => {

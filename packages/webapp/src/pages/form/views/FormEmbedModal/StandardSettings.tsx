@@ -1,27 +1,28 @@
-import { helper } from '@heyform-inc/utils'
 import { observer } from 'mobx-react-lite'
-
-import { Select } from '@/components/ui'
-import { useStore } from '@/store'
 import { useTranslation } from 'react-i18next'
+
+import { helper } from '@heyform-inc/utils'
+
+import { Select } from '@/components'
+import { useStore } from '@/store'
 
 import { FullpageSettings } from './FullpageSettings'
 import { WidthInput } from './WidthInput'
 
 export const StandardSettings = observer(() => {
   const formStore = useStore('formStore')
-	const { t } = useTranslation()
+  const { t } = useTranslation()
 
-	const HEIGHT_OPTIONS = [
-		{
-			label: t('share.auto'),
-			value: true
-		},
-		{
-			label: t('share.fixed'),
-			value: false
-		}
-	]
+  const HEIGHT_OPTIONS = [
+    {
+      label: t('share.auto'),
+      value: true
+    },
+    {
+      label: t('share.fixed'),
+      value: false
+    }
+  ]
 
   function handleChange(autoResizeHeight: any) {
     formStore.updateEmbedConfig({

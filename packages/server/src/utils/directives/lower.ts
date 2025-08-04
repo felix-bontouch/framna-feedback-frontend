@@ -1,4 +1,5 @@
 import { SchemaDirectiveVisitor } from 'apollo-server'
+
 import { GraphQLField, defaultFieldResolver } from 'graphql'
 
 export class LowerCaseDirective extends SchemaDirectiveVisitor {

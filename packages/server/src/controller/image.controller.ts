@@ -5,15 +5,14 @@ import { resolve } from 'path'
 import * as sharp from 'sharp'
 import { Readable } from 'stream'
 
-import { qs } from '@heyform-inc/utils'
-
 import { ImageResizingDto } from '@dto'
 import { UPLOAD_DIR } from '@environments'
+import { qs } from '@heyform-inc/utils'
 import { md5 } from '@utils'
 
 @Controller()
 export class ImageController {
-  @Get('/image')
+  @Get('/api/image')
   async index(@Query() input: ImageResizingDto, @Res() res: any) {
     const filePath = await this._getPath(input)
     const headersPath = `${filePath}.json`

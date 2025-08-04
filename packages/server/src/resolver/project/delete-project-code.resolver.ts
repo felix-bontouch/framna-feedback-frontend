@@ -1,9 +1,9 @@
 import { BadRequestException } from '@nestjs/common'
-import { Args, Query, Resolver } from '@nestjs/graphql'
 
 import { Auth, Project, ProjectGuard, Team, User } from '@decorator'
 import { ProjectDetailInput } from '@graphql'
 import { ProjectModel, TeamModel, UserModel } from '@model'
+import { Args, Query, Resolver } from '@nestjs/graphql'
 import { AuthService, MailService } from '@service'
 
 @Resolver()
@@ -26,7 +26,6 @@ export class DeleteProjectCodeResolver {
       throw new BadRequestException("You don't have permission to delete the project")
     }
 
-    // Add a code of dissolve team to cache
     const key = `verify_delete_project:${project.id}`
     const code = await this.authService.getVerificationCode(key)
 

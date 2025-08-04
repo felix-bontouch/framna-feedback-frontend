@@ -90,8 +90,6 @@ export default {
   'Card number is incomplete': 'カード番号が不完全です',
   'Expiry date is incomplete': '有効期限が不完全です',
   'Card cvc is incomplete': 'カードCVCが不完全です',
-  'Invalid payment amount': '無効な支払い額',
-  'Invalid payment currency': '無効な支払い通貨',
   reportMeta_zero: 'まだ提出物はありません',
   reportMeta_one: '{{count}}件の提出物',
   reportMeta_other: '{{count}}件の提出物',

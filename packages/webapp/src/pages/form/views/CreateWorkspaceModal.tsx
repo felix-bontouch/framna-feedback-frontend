@@ -3,12 +3,13 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PhotoPickerField } from '@/components'
-import { Button, Form, Input, Modal } from '@/components/ui'
 import { WorkspaceModel } from '@/models'
-import { WorkspaceService } from '@/service'
-import { useStore } from '@/store'
+import { WorkspaceService } from '@/services'
 import { useRouter } from '@/utils'
+
+import { PhotoPickerField } from '@/components'
+import { Button, Form, Input, Modal } from '@/components'
+import { useStore } from '@/store'
 
 const CreateWorkspaceModal: FC<IModalProps> = observer(({ visible, onClose }) => {
   const { t } = useTranslation()
@@ -29,14 +30,11 @@ const CreateWorkspaceModal: FC<IModalProps> = observer(({ visible, onClose }) =>
     try {
       const result = await WorkspaceService.create(values.name, values.avatar)
 
-      // Fetch the latest workspaces
       const workspaces = await WorkspaceService.workspaces()
       workspaceStore.setWorkspaces(workspaces)
 
-      // Hide the modal
       onClose?.()
 
-      // Navigate to new created workspace page
       router.replace(`/workspace/${result}`)
     } catch (err: any) {
       setLoading(false)

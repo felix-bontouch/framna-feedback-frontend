@@ -1,13 +1,11 @@
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { JobOptions, Queue } from 'bull'
-import { readFileSync } from 'fs'
-import { basename } from 'path'
-
-import { helper } from '@heyform-inc/utils'
+import { readFileSync, readdirSync } from 'fs'
+import { basename, extname, join } from 'path'
 
 import { EMAIL_TEMPLATES_DIR, SMTP_FROM } from '@environments'
-import { readDirSync } from '@utils'
+import { helper } from '@heyform-inc/utils'
 
 interface JoinWorkspaceAlertOptions {
   teamName: string
@@ -48,6 +46,12 @@ interface TeamInvitationOptions {
   link: string
 }
 
+interface UserSecurityAlertOptions {
+  deviceModel: string
+  ip: string
+  loginAt: string
+}
+
 const HTML_EXT = '.html'
 const TEMPLATE_META_REGEX = /^---([\s\S]*?)---[\n\s\S]\n/
 
@@ -72,6 +76,12 @@ export class MailService {
   async emailVerificationRequest(to: string, code: string) {
     await this.addQueue('email_verification_request', to, {
       code
+    })
+  }
+
+  async formInvitation(to: string, link: string) {
+    await this.addQueue('form_invitation', to, {
+      link
     })
   }
 
@@ -102,6 +112,12 @@ export class MailService {
     await this.addQueue('submission_notification', to, options)
   }
 
+  async teamDataExportReady(to: string, link: string) {
+    await this.addQueue('team_data_export_ready', to, {
+      link
+    })
+  }
+
   async teamDeletionAlert(to: string, options: TeamDeletionAlertOptions) {
     await this.addQueue('team_deletion_alert', to, options)
   }
@@ -117,8 +133,15 @@ export class MailService {
     })
   }
 
+  async userSecurityAlert(to: string, options: UserSecurityAlertOptions) {
+    await this.addQueue('user_security_alert', to, options)
+  }
+
   private init() {
-    const filePaths = readDirSync(EMAIL_TEMPLATES_DIR, HTML_EXT)
+    const allFiles = readdirSync(EMAIL_TEMPLATES_DIR)
+    const filePaths = allFiles
+      .filter(file => extname(file) === HTML_EXT)
+      .map(file => join(EMAIL_TEMPLATES_DIR, file))
 
     for (const filePath of filePaths) {
       const name = basename(filePath, HTML_EXT)

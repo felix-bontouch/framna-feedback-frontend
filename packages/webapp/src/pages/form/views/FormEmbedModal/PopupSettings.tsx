@@ -1,19 +1,19 @@
 import { observer } from 'mobx-react-lite'
-
-import { Input, Select } from '@/components/ui'
-import { useStore } from '@/store'
 import { useTranslation } from 'react-i18next'
+
+import { Input, Select } from '@/components'
+import { useStore } from '@/store'
 
 import { ModalSettings } from './ModalSettings'
 
 export const PopupSettings = observer(() => {
   const formStore = useStore('formStore')
-	const { t } = useTranslation()
+  const { t } = useTranslation()
 
-	const POSITION_OPTIONS = [
-		{ value: 'bottom-left', label: t('share.bottomLeftCorner') },
-		{ value: 'bottom-right', label: t('share.bottomRightCorner') }
-	]
+  const POSITION_OPTIONS = [
+    { value: 'bottom-left', label: t('share.bottomLeftCorner') },
+    { value: 'bottom-right', label: t('share.bottomRightCorner') }
+  ]
   function handleChange(updates: any) {
     formStore.updateEmbedConfig(updates)
   }

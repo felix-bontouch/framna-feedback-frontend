@@ -1,6 +1,3 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
-
 import {
   Answer,
   HiddenFieldAnswer,
@@ -8,6 +5,8 @@ import {
   SubmissionStatusEnum,
   Variable
 } from '@heyform-inc/shared-types-enums'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
 
 import { UserAgent } from '@utils'
 

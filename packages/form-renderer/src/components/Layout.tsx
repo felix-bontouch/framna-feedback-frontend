@@ -1,9 +1,9 @@
 import type { Layout as FormLayout } from '@heyform-inc/shared-types-enums'
-import { deepEqual, helper } from '@heyform-inc/utils'
 import type { FC } from 'react'
 import { memo } from 'react'
 
 import { isURL } from '../utils'
+import { deepEqual, helper } from '@heyform-inc/utils'
 
 function filterStyle(brightness?: number) {
   if (!brightness) {
@@ -24,19 +24,8 @@ function filterStyle(brightness?: number) {
 }
 
 const LayoutComponent: FC<FormLayout> = props => {
-  if (helper.isEmpty(props) || !isURL(props!.mediaUrl)) {
-    return null
-  }
-
-  return (
-    <div className={`heyform-layout heyform-layout-${props!.align}`}>
-      <img
-        src={props!.mediaUrl}
-        style={filterStyle(props!.brightness)}
-        alt="HeyForm layout image"
-      />
-    </div>
-  )
+  // Layout images are disabled - no images allowed in forms
+  return null
 }
 
 export const Layout = memo(LayoutComponent, deepEqual)

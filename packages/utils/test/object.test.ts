@@ -1,11 +1,12 @@
-import { test, expect } from 'vitest'
+import { expect, test } from 'vitest'
+
 import {
-  pickObject,
-  pickValidValues,
-  removeObjectNil,
   copyObjectValues,
   deepEqual,
-  excludeObject
+  excludeObject,
+  pickObject,
+  pickValidValues,
+  removeObjectNil
 } from '../src'
 
 const obj = {
@@ -53,17 +54,18 @@ test('pick fields from non object', () => {
 })
 
 test('pick plain object', () => {
-  expect(pickValidValues({ ...obj, list: [1, 2, 3, 4, 5] }, ['a', 'b', 'list', ['c', 'c.0']])).toStrictEqual({
-    'c.0': 'hello', 
+  expect(
+    pickValidValues({ ...obj, list: [1, 2, 3, 4, 5] }, ['a', 'b', 'list', ['c', 'c.0']])
+  ).toStrictEqual({
+    'c.0': 'hello',
     list: [1, 2, 3, 4, 5]
   })
 })
 
-
 test('copy invalid values', () => {
   const dist = {}
   copyObjectValues('' as any, dist, ['a'])
-  
+
   const dist2 = {}
   copyObjectValues(null as any, dist2, ['a'])
 
@@ -99,7 +101,7 @@ test('copy values to dist object', () => {
 })
 
 test('deep equal', () => {
-  expect(deepEqual({x: {y: [{z: 10}]}}, {x: {y: [{z: 10}]}})).toBe(true)
+  expect(deepEqual({ x: { y: [{ z: 10 }] } }, { x: { y: [{ z: 10 }] } })).toBe(true)
 })
 
 test('exclude object', () => {

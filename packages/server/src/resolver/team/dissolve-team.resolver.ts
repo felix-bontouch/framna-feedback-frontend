@@ -1,9 +1,9 @@
 import { BadRequestException } from '@nestjs/common'
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
 
 import { Auth, Team, TeamGuard, User } from '@decorator'
 import { DissolveTeamInput } from '@graphql'
 import { TeamModel, UserModel } from '@model'
+import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import { AuthService, FormService, MailService, SubmissionService, TeamService } from '@service'
 
 @Resolver()
@@ -28,7 +28,6 @@ export class DissolveTeamResolver {
       throw new BadRequestException("You don't have permission to dissolve workspace")
     }
 
-    // Check if dissolve team is exceeded
     const attemptsKey = `limit:dissolve_team:${team.id}`
 
     await this.authService.attemptsCheck(attemptsKey, async () => {

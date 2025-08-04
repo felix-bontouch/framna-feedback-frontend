@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { GqlModuleOptions, GqlOptionsFactory } from '@nestjs/graphql'
 import { UserInputError } from 'apollo-server-express'
 import { ValidationError } from 'class-validator'
 
 import { helper } from '@heyform-inc/utils'
-
+import { GqlModuleOptions, GqlOptionsFactory } from '@nestjs/graphql'
 import { LowerCaseDirective } from '@utils'
 
 @Injectable()

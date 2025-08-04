@@ -1,19 +1,21 @@
 import { HttpModule, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common'
-import { GraphQLModule } from '@nestjs/graphql'
 import { MongooseModule } from '@nestjs/mongoose'
-import { ScheduleModule } from '@nestjs/schedule'
+import { ThrottlerModule } from '@nestjs/throttler'
 import { RedisModule } from '@svtslv/nestjs-ioredis'
-
-import { GraphqlService, MongoService, RedisService } from '@config'
-import { FormBodyMiddleware, JsonBodyMiddleware, RawBodyMiddleware } from '@middleware'
-import { LowerCaseScalar } from '@utils'
 
 import * as Controllers from './controller'
 import { ModelModule } from './model/module'
-import { QueueModules, QueueProviders } from './queue'
 import * as Resolvers from './resolver'
 import { ScheduleModules, ScheduleProviders } from './schedule'
 import * as Services from './service'
+import { GraphqlService, MongoService, RedisService } from '@config'
+import { hs } from '@heyform-inc/utils'
+import { FormBodyMiddleware, JsonBodyMiddleware, RawBodyMiddleware } from '@middleware'
+import { GraphQLModule } from '@nestjs/graphql'
+import { ScheduleModule } from '@nestjs/schedule'
+import { LowerCaseScalar } from '@utils'
+
+import { QueueModules, QueueProviders } from './queue'
 
 @Module({
   imports: [...QueueModules, ...ScheduleModules, HttpModule, ScheduleModule.forRoot(), ModelModule],
@@ -27,7 +29,13 @@ import * as Services from './service'
 class ServiceModule {}
 
 @Module({
-  imports: [ServiceModule],
+  imports: [
+    ThrottlerModule.forRoot({
+      ttl: hs('1m'),
+      limit: 1000
+    }),
+    ServiceModule
+  ],
   controllers: [...Object.values(Controllers)],
   providers: [...Object.values(Resolvers), LowerCaseScalar]
 })
@@ -51,15 +59,6 @@ class ResolverModule {}
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(RawBodyMiddleware)
-      .forRoutes({
-        path: '/payment/*',
-        method: RequestMethod.POST
-      })
-      .apply(FormBodyMiddleware)
-      .forRoutes('*')
-      .apply(JsonBodyMiddleware)
-      .forRoutes('*')
+    consumer.apply(FormBodyMiddleware).forRoutes('*').apply(JsonBodyMiddleware).forRoutes('*')
   }
 }

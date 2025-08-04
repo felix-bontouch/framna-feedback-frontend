@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: framna-feedback-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: framna-feedback
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - framna-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: framna-feedback-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - framna-network
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  framna-network:
+    driver: bridge

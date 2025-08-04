@@ -1,4 +1,5 @@
-import { test, expect } from 'vitest'
+import { expect, test } from 'vitest'
+
 import { bytes, formatBytes } from '../src'
 
 test('parse undefined', () => {

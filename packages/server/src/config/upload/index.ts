@@ -1,8 +1,7 @@
-import { diskStorage } from 'multer'
-import { mkdirpSync, pathExistsSync } from 'fs-extra'
-import { helper, nanoid } from '@heyform-inc/utils'
-import * as multerS3 from 'multer-s3'
 import { S3Client } from '@aws-sdk/client-s3'
+import { mkdirpSync, pathExistsSync } from 'fs-extra'
+import { diskStorage } from 'multer'
+import * as multerS3 from 'multer-s3'
 
 import {
   S3_ACCESS_KEY_ID,
@@ -12,6 +11,7 @@ import {
   S3_SECRET_ACCESS_KEY,
   UPLOAD_DIR
 } from '@environments'
+import { helper, nanoid } from '@heyform-inc/utils'
 
 export function getMulterStorage() {
   if (

@@ -1,9 +1,10 @@
 import { IconChevronDown, IconChevronUp, IconLayoutGrid } from '@tabler/icons-react'
 import type { FC } from 'react'
 
+import { useTranslation } from '../utils'
+
 import { Button, Tooltip } from '../components'
 import { useStore } from '../store'
-import { useTranslation } from '../utils'
 import { Branding } from './Branding'
 
 export const Footer: FC = () => {

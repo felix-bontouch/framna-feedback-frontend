@@ -1,10 +1,8 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
-
-import { helper, pickValidValues } from '@heyform-inc/utils'
-
 import { Auth, Form, FormGuard } from '@decorator'
 import { UpdateFormInput } from '@graphql'
+import { helper, pickValidValues } from '@heyform-inc/utils'
 import { FormModel } from '@model'
+import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import { FormService, SubmissionService } from '@service'
 
 @Resolver()
@@ -15,12 +13,6 @@ export class UpdateFormResolver {
     private readonly submissionService: SubmissionService
   ) {}
 
-  /**
-   * Update form
-   *
-   * @param team
-   * @param input
-   */
   @Mutation(returns => Boolean)
   @FormGuard()
   async updateForm(
@@ -38,7 +30,6 @@ export class UpdateFormResolver {
       ['timeLimit', 'settings.timeLimit'],
       ['captchaKind', 'settings.captchaKind'],
       ['filterSpam', 'settings.filterSpam'],
-      ['published', 'settings.published'],
       ['enableQuotaLimit', 'settings.enableQuotaLimit'],
       ['quotaLimit', 'settings.quotaLimit'],
       ['enableIpLimit', 'settings.enableIpLimit'],
@@ -46,29 +37,30 @@ export class UpdateFormResolver {
       ['ipLimitTime', 'settings.ipLimitTime'],
       ['enableProgress', 'settings.enableProgress'],
       ['enableQuestionList', 'settings.enableQuestionList'],
+      ['enableNavigationArrows', 'settings.enableNavigationArrows'],
       ['locale', 'settings.locale'],
       ['languages', 'settings.languages'],
       ['enableClosedMessage', 'settings.enableClosedMessage'],
       ['closedFormTitle', 'settings.closedFormTitle'],
       ['closedFormDescription', 'settings.closedFormDescription'],
-      ['allowArchive', 'settings.allowArchive']
+      ['allowArchive', 'settings.allowArchive'],
+      ['password', 'settings.password'],
+      ['requirePassword', 'settings.requirePassword'],
+      ['enableEmailNotification', 'settings.enableEmailNotification']
     ])
 
-    if (helper.isTrue(input.active)) {
-      updates.draft = false
-    }
-
-    if (!helper.isNil(input.password) || !helper.isNil(input.requirePassword)) {
+    if (helper.isTrue(input.redirectOnCompletion)) {
       updates = {
         ...updates,
         ...pickValidValues(input as any, [
-          ['password', 'settings.password'],
-          ['requirePassword', 'settings.requirePassword']
+          ['redirectOnCompletion', 'settings.redirectOnCompletion'],
+          ['redirectUrl', 'settings.redirectUrl'],
+          ['redirectDelay', 'settings.redirectDelay']
         ])
       }
     }
 
-    if (!input.allowArchive) {
+    if (input.allowArchive === false) {
       await this.submissionService.deleteByIds(input.formId)
     }
 
@@ -77,6 +69,19 @@ export class UpdateFormResolver {
       !input.languages.every(t => form.settings?.languages?.includes(t))
     ) {
       this.formService.addTranslateQueue(input.formId, input.languages!)
+    }
+
+    if (input.metaTitle || input.metaDescription || input.metaOGImageUrl) {
+      updates = {
+        ...updates,
+        ...pickValidValues(input as any, [
+          ['metaTitle', 'settings.metaTitle'],
+          ['metaDescription', 'settings.metaDescription'],
+          ['metaOGImageUrl', 'settings.metaOGImageUrl']
+        ])
+      }
+    } else if (helper.isNull(input.metaOGImageUrl)) {
+      updates['settings.metaOGImageUrl'] = null
     }
 
     return this.formService.update(input.formId, updates)

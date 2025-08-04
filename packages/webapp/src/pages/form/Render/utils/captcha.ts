@@ -1,12 +1,10 @@
 import { pickObject } from '@heyform-inc/utils'
 
-import { GEETEST_CAPTCHA_ID, GOOGLE_RECAPTCHA_KEY } from '@/consts'
-
-export function initGeeTest(): Promise<any> {
+export function initGeeTest(): Promise<Any> {
   return new Promise(resolve => {
-    window.initGeetest(
+    window.initGeetest4(
       {
-        captchaId: GEETEST_CAPTCHA_ID,
+        captchaId: GEETEST_ID,
         product: 'bind',
         mask: {
           outside: false,
@@ -14,7 +12,7 @@ export function initGeeTest(): Promise<any> {
         },
         hideBar: ['close']
       },
-      (instance: any) => {
+      (instance: Any) => {
         instance.onReady(() => {
           resolve(instance)
         })
@@ -23,11 +21,11 @@ export function initGeeTest(): Promise<any> {
   })
 }
 
-export function recaptchaToken(instance: any): Promise<string> {
+export function recaptchaToken(instance: Any): Promise<string> {
   return new Promise((resolve, reject) => {
     instance.ready(() => {
       instance
-        .execute(GOOGLE_RECAPTCHA_KEY, {
+        .execute(RECAPTCHA_KEY, {
           action: 'submit'
         })
         .then(resolve)
@@ -36,7 +34,7 @@ export function recaptchaToken(instance: any): Promise<string> {
   })
 }
 
-export function geeTestToken(instance: any): Promise<any> {
+export function geeTestToken(instance: Any): Promise<Any> {
   return new Promise((resolve, reject) => {
     instance.onSuccess(() => {
       const values = instance.getValidate()
@@ -51,11 +49,11 @@ export function geeTestToken(instance: any): Promise<any> {
       resolve(data)
     })
 
-    instance.onClose((err: any) => {
+    instance.onClose((err: Any) => {
       reject(err)
     })
 
-    instance.onError((err: any) => {
+    instance.onError((err: Any) => {
       console.error(err)
       reject(new Error(err.msg))
     })

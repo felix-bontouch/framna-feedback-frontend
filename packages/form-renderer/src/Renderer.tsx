@@ -1,4 +1,3 @@
-import { applyLogicToFields } from '@heyform-inc/answer-utils'
 import {
   ActionEnum,
   FieldKindEnum,
@@ -6,19 +5,21 @@ import {
   OTHER_FIELD_KINDS,
   QUESTION_FIELD_KINDS
 } from '@heyform-inc/shared-types-enums'
-import { helper, nanoid } from '@heyform-inc/utils'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import clsx from 'clsx'
 import type { FC } from 'react'
 import { useEffect, useMemo, useReducer, useState } from 'react'
 
+import { flattenFieldsWithGroups, parseFields, progressPercentage } from './utils'
+import { applyLogicToFields } from '@heyform-inc/answer-utils'
+import { helper, nanoid } from '@heyform-inc/utils'
+
 import { ClosedMessage } from './blocks/ClosedMessage'
 import { SuspendedMessage } from './blocks/SuspendedMessage'
-import type { IState, IStripe } from './store'
+import type { IState } from './store'
 import { StoreContext, StoreReducer, getStorage } from './store'
 import { getTheme } from './theme'
 import type { IFormModel } from './typings'
-import { flattenFieldsWithGroups, parseFields, progressPercentage } from './utils'
 import { Blocks } from './views/Blocks'
 import { Sidebar } from './views/Sidebar'
 
@@ -27,8 +28,6 @@ export interface FormRendererProps {
   form: IFormModel
   locale: string
   query?: Record<string, any>
-  stripeApiKey?: string
-  stripeAccountId?: string
   autoSave?: boolean
   customUrlRedirects?: boolean
   reportAbuseURL?: string
@@ -36,16 +35,10 @@ export interface FormRendererProps {
   enableQuestionList?: boolean
   enableNavigationArrows?: boolean
   ssr?: boolean
-  onSubmit?: (values: Record<string, any>, isPartial?: boolean, stripe?: IStripe) => Promise<void>
+  onSubmit?: (values: Record<string, any>, isPartial?: boolean) => Promise<void>
 }
 
-function initStore(
-  form: IFormModel,
-  locale: string,
-  autoSave: boolean,
-  allowPayment: boolean,
-  ssr?: boolean
-): IState {
+function initStore(form: IFormModel, locale: string, autoSave: boolean, ssr?: boolean): IState {
   const list = parseFields(form.fields, form.translations?.[locale])
 
   const welcomeField = list.find(f => f.kind === FieldKindEnum.WELCOME)
@@ -53,9 +46,8 @@ function initStore(
 
   let allFields = flattenFieldsWithGroups(list.filter(f => !OTHER_FIELD_KINDS.includes(f.kind)))
 
-  if (!allowPayment) {
-    allFields = allFields.filter(f => f.kind !== FieldKindEnum.PAYMENT)
-  }
+  // Filter out any unsupported field types
+  allFields = allFields.filter(f => f.kind !== FieldKindEnum.PAYMENT)
 
   const jumpFieldIds = (form.logics || [])
     .filter(l => l.payloads.some(p => p.action.kind === ActionEnum.NAVIGATE))
@@ -106,8 +98,6 @@ export const FormRenderer: FC<FormRendererProps> = ({
   locale,
   query = {},
   autoSave = true,
-  stripeApiKey,
-  stripeAccountId,
   reportAbuseURL,
   alwaysShowNextButton = false,
   customUrlRedirects = false,
@@ -122,10 +112,6 @@ export const FormRenderer: FC<FormRendererProps> = ({
     setAndroid(window.heyform.device.android)
   }, [])
 
-  const allowPayment = useMemo(
-    () => !!(stripeApiKey && stripeAccountId),
-    [stripeApiKey, stripeAccountId]
-  )
   const memoState: IState = useMemo(
     () => ({
       reportAbuseURL,
@@ -134,10 +120,10 @@ export const FormRenderer: FC<FormRendererProps> = ({
       enableQuestionList,
       enableNavigationArrows,
       onSubmit,
-      ...initStore(form, locale, autoSave, allowPayment, ssr),
+      ...initStore(form, locale, autoSave, ssr),
       query
     }),
-    [form, locale, autoSave, allowPayment, query]
+    [form, locale, autoSave, query]
   )
   const [state, dispatch] = useReducer(StoreReducer, memoState)
 
@@ -150,31 +136,6 @@ export const FormRenderer: FC<FormRendererProps> = ({
   else if (!helper.isValidArray(form.fields)) {
     return <ClosedMessage form={form} />
   }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    if (allowPayment) {
-      const paymentField = memoState.fields.find(f => f.kind === FieldKindEnum.PAYMENT)
-
-      if (paymentField) {
-        const stripe = (window as any).Stripe(stripeApiKey, {
-          stripeAccount: stripeAccountId
-        })
-
-        dispatch({
-          type: 'setStripe',
-          payload: {
-            stripe: {
-              elements: stripe.elements({ locale: memoState.locale }),
-              confirmCardPayment: stripe.confirmCardPayment.bind(stripe),
-              apiKey: stripeApiKey,
-              accountId: stripeAccountId
-            }
-          }
-        })
-      }
-    }
-  }, [])
 
   return (
     <StoreContext.Provider value={{ state, dispatch }}>

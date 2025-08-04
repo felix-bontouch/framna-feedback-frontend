@@ -1,33 +1,32 @@
-import { helper } from '@heyform-inc/utils'
 import { observer } from 'mobx-react-lite'
 import { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Input, Select, Switch } from '@/components/ui'
+import { helper } from '@heyform-inc/utils'
+
+import { Input, Select, Switch } from '@/components'
 import { ColorPickerDropdown } from '@/pages/form/Create/views/RightSidebar/Design/Customize/ColorPickerField'
 import { useStore } from '@/store'
 
 import { FullpageSettings } from './FullpageSettings'
 
-
-
 export const ModalSettings: FC<IComponentProps> = observer(({ children }) => {
   const formStore = useStore('formStore')
-	const { t } = useTranslation()
+  const { t } = useTranslation()
 
-	const SIZE_OPTIONS = [
-		{ value: 'small', label: t('share.small') },
-		{ value: 'medium', label: t('share.medium') },
-		{ value: 'large', label: t('share.large') }
-	]
+  const SIZE_OPTIONS = [
+    { value: 'small', label: t('share.small') },
+    { value: 'medium', label: t('share.medium') },
+    { value: 'large', label: t('share.large') }
+  ]
 
-	const LAUNCH_OPTIONS = [
-		{ value: 'click', label: t('share.onButtonClick')},
-		{ value: 'load', label: t('share.onPageLoad') },
-		{ value: 'delay', label: t('share.afterElapsedTime') },
-		{ value: 'exit', label: t('share.onExitIntent') },
-		{ value: 'scroll', label: t('share.afterScrolling') }
-	]
+  const LAUNCH_OPTIONS = [
+    { value: 'click', label: t('share.onButtonClick') },
+    { value: 'load', label: t('share.onPageLoad') },
+    { value: 'delay', label: t('share.afterElapsedTime') },
+    { value: 'exit', label: t('share.onExitIntent') },
+    { value: 'scroll', label: t('share.afterScrolling') }
+  ]
 
   function handleChange(updates: any) {
     formStore.updateEmbedConfig(updates)

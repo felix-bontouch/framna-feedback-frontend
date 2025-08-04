@@ -1,10 +1,11 @@
+import { SocialLoginTypeEnum } from '@heyform-inc/shared-types-enums'
 import { Controller, Get, Param, Post, Query, Req, Res } from '@nestjs/common'
 
-import { SocialLoginTypeEnum } from '@heyform-inc/shared-types-enums'
 import { helper } from '@heyform-inc/utils'
-
 import { AuthService, RedisService, SocialLoginService } from '@service'
 import { Logger } from '@utils'
+
+const { isValid } = helper
 
 @Controller()
 export class SocialLoginController {
@@ -35,7 +36,7 @@ export class SocialLoginController {
   ) {
     if (helper.isEmpty(query.state)) {
       return res.render('index', {
-        rendererData: {
+        payload: {
           error: `unable_connect_${kind}`.toUpperCase()
         }
       })
@@ -44,7 +45,7 @@ export class SocialLoginController {
     const authUrl = this.socialLoginService.authUrl(kind as any, query.state)
 
     // Store redirect_uri to redis
-    if (helper.isValid(query.redirect_uri)) {
+    if (isValid(query.redirect_uri)) {
       const key = `redirect_uri:${query.state}`
 
       await this.redisService.set({
@@ -56,7 +57,7 @@ export class SocialLoginController {
 
     if (helper.isEmpty(authUrl)) {
       return res.render('index', {
-        rendererData: {
+        data: {
           error: `unable_connect_${kind}`.toUpperCase()
         }
       })
@@ -81,7 +82,7 @@ export class SocialLoginController {
     @Req() req: any,
     @Res() res: any
   ) {
-    // Apple will only post `code` and `state` to back-end server
+    //!!! Sign With Apple will only post `code` and `state` to back-end server
     await this.handleCallback(kind, req.body, req, res)
   }
 
@@ -100,16 +101,18 @@ export class SocialLoginController {
       await this.authService.login({
         res,
         userId,
-        browserId: query.state
+        deviceId: query.state
       })
+
+      const baseUri = '/'
 
       const key = `redirect_uri:${query.state}`
       let redirectUri = await this.redisService.get(key)
 
-      if (helper.isValid(redirectUri)) {
-        redirectUri = `/?redirect_uri=${encodeURIComponent(redirectUri)}`
+      if (isValid(redirectUri)) {
+        redirectUri = `${baseUri}?redirect_uri=${encodeURIComponent(redirectUri)}`
       } else {
-        redirectUri = '/'
+        redirectUri = baseUri
       }
 
       res.render('social-login', {
@@ -119,7 +122,7 @@ export class SocialLoginController {
       this.logger.error(err)
 
       res.render('index', {
-        rendererData: {
+        data: {
           error: `unable_connect_${kind}`.toUpperCase()
         }
       })

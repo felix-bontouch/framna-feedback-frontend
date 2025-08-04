@@ -6,69 +6,51 @@ import type { FC } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Modal, Spin, Switch, notification, useLockBodyScroll } from '@/components/ui'
-import { STRIPE_PUBLISHABLE_KEY } from '@/consts'
-import { Renderer, insertWebFont } from '@/pages/form/views/FormComponents'
-import { type IFormModel } from '@/pages/form/views/FormComponents/typings'
-import { useStore } from '@/store'
-import { insertThemeStyle, loadScript } from '@/utils'
+import { insertThemeStyle } from '@/utils'
+
+import { Button, Modal, Select } from '@/components'
+import { useAppStore, useFormStore } from '@/store'
 
 import './index.scss'
 
 export const FormPreviewModal: FC = observer(() => {
-  const appStore = useStore('appStore')
-  const formStore = useStore('formStore')
+  const appStore = useAppStore()
+  const formStore = useFormStore()
   const [value, setValue] = useState('mobile')
   const [isLoaded, setIsLoaded] = useState(false)
-	const { t } = useTranslation()
+  const { t } = useTranslation()
 
   function handleClose() {
-    appStore.isFormPreviewOpen = false
+    appStore.closeModal('FormPreviewModal')
   }
 
   function handleChange(newValue: any) {
     setValue(newValue)
   }
 
-  useLockBodyScroll(appStore.isFormPreviewOpen)
+  useLockBodyScroll(appStore.modals.get('FormPreviewModal'))
 
   useEffect(() => {
-    if (appStore.isFormPreviewOpen && formStore.current) {
-      insertWebFont(formStore.customTheme!.fontFamily)
-      insertThemeStyle(formStore.customTheme!)
-
-      const paymentField = formStore.current.fields?.find(f => f.kind == FieldKindEnum.PAYMENT)
-
-      if (!paymentField) {
-        return setIsLoaded(true)
-      }
-
-      loadScript('stripe', 'https://js.stripe.com/v3/', (err: any) => {
-        if (err) {
-          notification.error({
-            title: err.message
-          })
-          setIsLoaded(false)
-        } else {
-          setIsLoaded(true)
-        }
-      })
+    if (appStore.modals.get('FormPreviewModal') && formStore.form) {
+      insertWebFont(formStore.form.themeSettings!.theme!.fontFamily)
+      insertThemeStyle(formStore.form.themeSettings!.theme!)
+      setIsLoaded(true)
     }
-  }, [appStore.isFormPreviewOpen, formStore.current])
+  }, [appStore, formStore])
 
   return (
     <>
-      {appStore.isFormPreviewOpen && formStore.current && (
+      {appStore.modals.get('FormPreviewModal') && formStore.form && (
         <Modal
-          className="form-preview-modal"
           visible={true}
-          maskClosable={false}
-          showCloseIcon={false}
+          contentProps={{
+            className: 'form-preview-modal'
+          }}
         >
           <div className="form-preview-header">
             <div className="ml-4 text-lg font-medium text-slate-900">{t('form.preview')}</div>
             <div className="flex flex-1 items-center justify-center">
-              <Switch.Group
+              <Select
                 className="!hidden text-sm md:!inline-flex"
                 value={value}
                 options={[
@@ -93,12 +75,7 @@ export const FormPreviewModal: FC = observer(() => {
                 <Spin />
               </div>
             ) : (
-              <Renderer
-                form={formStore.current as IFormModel}
-                autoSave={false}
-                stripeApiKey={STRIPE_PUBLISHABLE_KEY}
-                stripeAccountId={formStore.current?.stripeAccount?.accountId}
-              />
+              <Renderer form={formStore.form as any} autoSave={false} />
             )}
           </div>
         </Modal>

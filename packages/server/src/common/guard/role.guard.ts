@@ -1,10 +1,9 @@
 import { BadRequestException, CanActivate, ExecutionContext, Inject } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { GqlExecutionContext } from '@nestjs/graphql'
 
 import { helper } from '@heyform-inc/utils'
-
 import { TeamModel, TeamRoleEnum } from '@model'
+import { GqlExecutionContext } from '@nestjs/graphql'
 import { FormService, TeamService } from '@service'
 
 export enum RoleGuardScopeEnum {

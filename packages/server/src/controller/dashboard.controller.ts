@@ -2,33 +2,27 @@ import { Controller, Get, Header, Res } from '@nestjs/common'
 import { Response } from 'express'
 
 import {
-  APP_DISABLE_REGISTRATION,
   APP_HOMEPAGE_URL,
   COOKIE_DOMAIN,
-  DISABLE_LOGIN_WITH_APPLE,
-  DISABLE_LOGIN_WITH_GOOGLE,
-  GEETEST_CAPTCHA_ID,
-  GOOGLE_RECAPTCHA_KEY,
-  STRIPE_PUBLISHABLE_KEY,
-  VERIFY_USER_EMAIL
+  GEETEST_CAPTCHA_KEY,
+  GOOGLE_RECAPTCHA_KEY
 } from '@environments'
 
 @Controller()
 export class DashboardController {
-  @Get('/*')
+  @Get(['/', '/dashboard', '/dashboard/*'])
   @Header('X-Frame-Options', 'SAMEORIGIN')
   index(@Res() res: Response) {
     return res.render('index', {
-      rendererData: {
+      title: 'HeyForm Dashboard - Create and Manage Custom Forms Effortlessly',
+      description:
+        "Simplify your form creation process with HeyForm's intuitive dashboard. Design, customize, and manage forms all in one place, with no coding required.",
+      heyform: {
         homepageURL: APP_HOMEPAGE_URL,
+        websiteURL: APP_HOMEPAGE_URL,
         cookieDomain: COOKIE_DOMAIN,
-        stripePublishableKey: STRIPE_PUBLISHABLE_KEY,
-        geetestCaptchaId: GEETEST_CAPTCHA_ID,
-        googleRecaptchaKey: GOOGLE_RECAPTCHA_KEY,
-        appDisableRegistration: APP_DISABLE_REGISTRATION,
-        disableLoginWithApple: DISABLE_LOGIN_WITH_APPLE,
-        disableLoginWithGoogle: DISABLE_LOGIN_WITH_GOOGLE,
-        verifyUserEmail: VERIFY_USER_EMAIL
+        geetestCaptchaId: GEETEST_CAPTCHA_KEY,
+        googleRecaptchaKey: GOOGLE_RECAPTCHA_KEY
       }
     })
   }

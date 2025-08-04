@@ -1,8 +1,7 @@
 import { FieldKindEnum, FileUploadValue, FormModel } from '@heyform-inc/shared-types-enums'
-import { helper } from '@heyform-inc/utils'
 
-import { flattenFieldsWithGroups } from '@/pages/form/views/FormComponents'
-import { AppService } from '@/service'
+import { UploadService } from '@/services'
+import { helper } from '@heyform-inc/utils'
 
 interface UploaderField {
   id: string
@@ -15,8 +14,8 @@ const UPLOAD_FIELD_KINDS = [FieldKindEnum.SIGNATURE, FieldKindEnum.FILE_UPLOAD]
 export class Uploader {
   private fields: UploaderField[] = []
 
-  constructor(form: FormModel, values: any) {
-    flattenFieldsWithGroups(form.fields!).forEach(row => {
+  constructor(form: FormModel, values: Any) {
+    form.fields!.forEach(row => {
       if (UPLOAD_FIELD_KINDS.includes(row.kind)) {
         let value = values[row.id]
 
@@ -36,7 +35,7 @@ export class Uploader {
   }
 
   async start() {
-    let result: any = {}
+    let result: Any = {}
 
     if (helper.isValid(this.fields)) {
       const promises = this.fields.map(field => {
@@ -56,11 +55,10 @@ export class Uploader {
   }
 
   async uploadFile(field: UploaderField): Promise<Record<string, FileUploadValue | string>> {
-    const file = field.value as File
-    const result = await AppService.upload(file)
+    const { url } = await UploadService.upload(field.value as File)
 
     return {
-      [field.id]: field.kind === FieldKindEnum.SIGNATURE ? result.url : result
+      [field.id]: url
     }
   }
 
@@ -75,7 +73,7 @@ export class Uploader {
       intArray[i] = bytes.charCodeAt(i)
     }
 
-    const blob: any = new Blob([intArray], { type })
+    const blob: Any = new Blob([intArray], { type })
     blob.name = 'signature.png'
 
     return blob

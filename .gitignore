@@ -27,6 +27,7 @@ logs
 # environment
 .env
 .env.*
+*.env.*
 docker.env
 !.env.example
 

@@ -1,9 +1,10 @@
 import { FC } from 'react'
 import { Trans } from 'react-i18next'
 
+import { useTranslation } from '../utils'
+
 import { LogoIcon } from '../components'
 import { useStore } from '../store'
-import { useTranslation } from '../utils'
 
 export const Branding: FC = () => {
   const { state } = useStore()

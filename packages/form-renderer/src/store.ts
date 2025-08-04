@@ -1,4 +1,3 @@
-import { applyLogicToFields } from '@heyform-inc/answer-utils'
 import type {
   FormField,
   FormSettings,
@@ -8,11 +7,9 @@ import type {
   Variable
 } from '@heyform-inc/shared-types-enums'
 import { QUESTION_FIELD_KINDS } from '@heyform-inc/shared-types-enums'
-import { helper } from '@heyform-inc/utils'
 import { useContext } from 'react'
 import store2 from 'store2'
 
-import type { AnyMap, IFormField } from './typings'
 import {
   LRU,
   createStoreContext,
@@ -22,6 +19,10 @@ import {
   replaceHTML,
   validateLogicField
 } from './utils'
+import { applyLogicToFields } from '@heyform-inc/answer-utils'
+import { helper } from '@heyform-inc/utils'
+
+import type { AnyMap, IFormField } from './typings'
 
 let LRU_CACHE: LRU
 
@@ -65,17 +66,6 @@ export function removeStorage(formId: string) {
 
 export type ScrollDestination = 'next' | 'previous' | string
 
-export interface IStripe {
-  elements: stripe.elements.Elements
-  confirmCardPayment: (
-    clientSecret: string,
-    data?: stripe.ConfirmCardPaymentData,
-    options?: stripe.ConfirmCardPaymentOptions
-  ) => Promise<stripe.PaymentIntentResponse>
-  apiKey: string
-  accountId: string
-}
-
 export interface IState {
   formId: string
   instanceId: string
@@ -112,8 +102,7 @@ export interface IState {
   enableNavigationArrows?: boolean
   logo?: string
   theme: FormTheme
-  stripe?: IStripe
-  onSubmit?: (values: Record<string, any>, isPartial?: boolean, stripe?: IStripe) => Promise<void>
+  onSubmit?: (values: Record<string, any>, isPartial?: boolean) => Promise<void>
 }
 
 const actions: any = {
@@ -185,8 +174,6 @@ const actions: any = {
   }),
 
   setIsSidebarOpen: (state: IState, { isSidebarOpen }: any) => ({ ...state, isSidebarOpen }),
-
-  setStripe: (state: IState, { stripe }: any) => ({ ...state, stripe }),
 
   resetErrorField: (state: IState) => ({ ...state, errorFieldId: undefined }),
 

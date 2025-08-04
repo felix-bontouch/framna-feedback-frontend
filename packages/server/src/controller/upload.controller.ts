@@ -8,13 +8,13 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { extname } from 'path'
 
-import { APP_HOMEPAGE_URL, S3_PUBLIC_URL, UPLOAD_FILE_SIZE, UPLOAD_FILE_TYPES } from '@environments'
 import { getMulterStorage } from '@config'
+import { APP_HOMEPAGE_URL, S3_PUBLIC_URL, UPLOAD_FILE_SIZE, UPLOAD_FILE_TYPES } from '@environments'
 import { helper } from '@heyform-inc/utils'
 
 @Controller()
 export class UploadController {
-  @Post('/upload')
+  @Post('/api/upload')
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {

@@ -1,13 +1,7 @@
-import { clone } from './clone'
-import {
-  isArray,
-  isNan,
-  isNil,
-  isObject,
-  isPlainObject,
-  isValid
-} from './helper'
 import * as objectPath from 'object-path'
+
+import { clone } from './clone'
+import { isArray, isNan, isNil, isObject, isPlainObject, isValid } from './helper'
 
 export { deepEqual } from 'fast-equals'
 
@@ -101,9 +95,7 @@ export function pickValidValues<T = string | number | boolean>(
   return dist
 }
 
-export function removeObjectNil(
-  target: Record<string, any>
-): Record<string, any> {
+export function removeObjectNil(target: Record<string, any>): Record<string, any> {
   if (!isObject(target)) {
     return {}
   }

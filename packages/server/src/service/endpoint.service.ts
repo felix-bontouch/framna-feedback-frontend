@@ -1,18 +1,16 @@
+import { CaptchaKindEnum, FieldKindEnum } from '@heyform-inc/shared-types-enums'
 import { BadRequestException, Injectable } from '@nestjs/common'
 
-import { CaptchaKindEnum, FieldKindEnum } from '@heyform-inc/shared-types-enums'
-import { helper } from '@heyform-inc/utils'
-
+import { AuthService } from './auth.service'
 import {
   AKISMET_KEY,
   APP_HOMEPAGE_URL,
   FORM_ENCRYPTION_KEY,
   GOOGLE_RECAPTCHA_SECRET
 } from '@environments'
+import { helper } from '@heyform-inc/utils'
 import { aesDecryptObject, akismet, recaptcha } from '@utils'
 import { Logger } from '@utils'
-
-import { AuthService } from './auth.service'
 
 interface VerifySpamOptions {
   answers: any[]

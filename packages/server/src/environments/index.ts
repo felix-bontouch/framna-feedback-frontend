@@ -1,7 +1,7 @@
+import { loadEnv } from '@heyooo-inc/env'
 import * as fs from 'fs'
 import { resolve } from 'path'
 
-import { loadEnv } from '@heyooo-inc/env'
 import { bytes, commonFileMimeTypes, helper, mime, toBool } from '@heyform-inc/utils'
 
 // environment
@@ -12,7 +12,7 @@ export const ROOT_PATH = process.cwd()
 loadEnv(NODE_ENV, ROOT_PATH)
 
 // App serve
-export const APP_LISTEN_PORT: number = +process.env.APP_LISTEN_PORT || 8000
+export const APP_LISTEN_PORT: number = +process.env.APP_LISTEN_PORT || 9157
 export const APP_LISTEN_HOSTNAME: string = process.env.APP_LISTEN_HOSTNAME || '0.0.0.0'
 export const APP_HOMEPAGE_URL: string =
   process.env.APP_HOMEPAGE_URL || `http://${APP_LISTEN_HOSTNAME}:${APP_LISTEN_PORT}`
@@ -33,9 +33,11 @@ export const STATIC_DIR: string = resolve(ROOT_PATH, 'static')
 export const VIEW_DIR: string = resolve(ROOT_PATH, 'view')
 
 // Upload
-export const UPLOAD_FILE_TYPES: string[] = (process.env.UPLOAD_FILE_TYPES
-  ? process.env.UPLOAD_FILE_TYPES.split(',').map(mime)
-  : commonFileMimeTypes) as any
+export const UPLOAD_FILE_TYPES: string[] = (
+  process.env.UPLOAD_FILE_TYPES
+    ? process.env.UPLOAD_FILE_TYPES.split(',').map(mime)
+    : commonFileMimeTypes
+) as any
 export const UPLOAD_FILE_SIZE: number = +process.env.UPLOAD_FILE_SIZE || bytes('10mb')
 export const UPLOAD_DIR: string = resolve(STATIC_DIR, 'upload')
 
@@ -100,13 +102,6 @@ export const GOOGLE_LOGIN_CLIENT_SECRET: string = process.env.GOOGLE_LOGIN_CLIEN
 export const DISABLE_LOGIN_WITH_GOOGLE =
   helper.isEmpty(GOOGLE_LOGIN_CLIENT_ID) || helper.isEmpty(GOOGLE_LOGIN_CLIENT_SECRET)
 
-// Stripe
-export const STRIPE_VERSION: string = process.env.STRIPE_VERSION
-export const STRIPE_PUBLISHABLE_KEY: string = process.env.STRIPE_PUBLISHABLE_KEY
-export const STRIPE_SECRET_KEY: string = process.env.STRIPE_SECRET_KEY
-export const STRIPE_CONNECT_CLIENT_ID: string = process.env.STRIPE_CONNECT_CLIENT_ID
-export const STRIPE_WEBHOOK_SECRET_KEY: string = process.env.STRIPE_WEBHOOK_SECRET_KEY
-
 // Bull
 export const BULL_JOB_ATTEMPTS: number = +process.env.BULL_JOB_ATTEMPTS || 3
 export const BULL_JOB_TIMEOUT: string = process.env.BULL_JOB_TIMEOUT || '1m'
@@ -133,7 +128,7 @@ export const UNSPLASH_CLIENT_ID: string = process.env.UNSPLASH_CLIENT_ID
 // OpenAI
 export const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-export const OPENAI_GPT_MODEL = process.env.OPENAI_GPT_MODEL || 'gpt-3.5-turbo-0125'
+export const OPENAI_GPT_MODEL = process.env.OPENAI_GPT_MODEL || 'gpt-4o-mini'
 
 // S3
 export const S3_ENDPOINT = process.env.S3_ENDPOINT

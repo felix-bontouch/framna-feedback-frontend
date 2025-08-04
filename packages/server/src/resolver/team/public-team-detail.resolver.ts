@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common'
-import { Args, Query, Resolver } from '@nestjs/graphql'
 
 import { PublicTeamDetailInput, PublicTeamType } from '@graphql'
+import { Args, Query, Resolver } from '@nestjs/graphql'
 import { TeamService, UserService } from '@service'
 
 @Resolver()
@@ -21,14 +21,23 @@ export class PublicTeamDetailResolver {
 
     const owner = await this.userService.findById(team.ownerId)
     const memberCount = await this.teamService.memberCount(team.id)
-
-    return {
+    const detail: PublicTeamType = {
       id: team.id,
       name: team.name,
       avatar: team.avatar,
-      allowJoinByInviteLink: team.inviteCode === input.inviteCode,
+      allowJoinByInviteLink: false,
       memberCount,
       owner
     }
+
+    if (team.inviteCode !== input.inviteCode) {
+      return detail
+    }
+
+    if (team.allowJoinByInviteLink) {
+      detail.allowJoinByInviteLink = true
+    }
+
+    return detail
   }
 }

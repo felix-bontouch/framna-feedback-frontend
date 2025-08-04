@@ -1,13 +1,14 @@
 import { IconArrowLeft, IconMenu2, IconX } from '@tabler/icons-react'
 import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
-import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui'
-import { useStore } from '@/store'
 import { useParam, useVisible } from '@/utils'
+
+import { Button } from '@/components'
+import { useStore } from '@/store'
 
 import { FormActions } from './FormActions'
 import { Navigation } from './Navigation'
@@ -17,7 +18,7 @@ export const FormNavbar: FC<IComponentProps> = observer(() => {
   const { workspaceId, projectId } = useParam()
   const workspaceStore = useStore('workspaceStore')
   const navigate = useNavigate()
-	const { t } = useTranslation()
+  const { t } = useTranslation()
 
   const [visible, open, close] = useVisible()
 

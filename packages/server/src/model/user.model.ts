@@ -1,6 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
 
+export enum UserLangEnum {
+  EN = 'en',
+  ZH_CN = 'zh-cn'
+}
+
 @Schema({
   timestamps: true
 })
@@ -26,8 +31,11 @@ export class UserModel extends Document {
   @Prop()
   note?: string
 
-  @Prop({ default: 'en' })
-  lang?: string
+  @Prop({ default: UserLangEnum.EN, enum: Object.values(UserLangEnum) })
+  lang?: UserLangEnum
+
+  @Prop()
+  customerId?: string
 
   @Prop({ default: false })
   isEmailVerified?: boolean
@@ -38,11 +46,28 @@ export class UserModel extends Document {
   @Prop({ default: 0 })
   deletionScheduledAt?: number
 
-  /**
-   * Check if user is register from social login,
-   * isSocialAccount will not be used as a column in the user schema
-   */
+  @Prop({ default: false })
+  isBlocked?: boolean
+
+  @Prop()
+  blockedAt?: number
+
+  @Prop({ default: 0 })
+  lastCheckedAt?: number
+
+  @Prop({ default: 0 })
+  publishedFormAt?: number
+
+  @Prop()
+  source?: string
+
   isSocialAccount?: boolean
+
+  hasPublishedForm: boolean
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserModel)
+
+UserSchema.virtual('hasPublishedForm').get(function () {
+  return this.publishedFormAt && this.publishedFormAt > 0
+})

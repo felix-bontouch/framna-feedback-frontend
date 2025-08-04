@@ -89,8 +89,6 @@ export default {
   'Card number is incomplete': '卡號不完整',
   'Expiry date is incomplete': '到期日期不完整',
   'Card cvc is incomplete': '卡cvc不完整',
-  'Invalid payment amount': '支付金額無效',
-  'Invalid payment currency': '支付貨幣無效',
   reportMeta_zero: '尚無提交',
   reportMeta_one: '{{count}} 次提交',
   reportMeta_other: '{{count}} 次提交',

@@ -1,7 +1,15 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql'
-import { IsOptional, IsString } from 'class-validator'
-import { GraphQLJSONObject } from 'graphql-type-json'
 import { HiddenFieldAnswer } from '@heyform-inc/shared-types-enums'
+import { IsOptional, IsString } from 'class-validator'
+
+import { CdnTokenInput } from './user.graphql'
+import { Field, InputType, ObjectType } from '@nestjs/graphql'
+import { GraphQLJSONObject } from 'graphql-type-json'
+
+@InputType()
+export class UploadFormFileInput extends CdnTokenInput {
+  @Field()
+  formId: string
+}
 
 @InputType()
 export class UploadFormSignatureInput {

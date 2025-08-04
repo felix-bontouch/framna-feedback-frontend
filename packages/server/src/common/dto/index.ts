@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer'
 import { IsInt, IsOptional, IsString, IsUrl } from 'class-validator'
+
 import { APP_HOMEPAGE_URL } from '@environments'
 
 export class ImageResizingDto {

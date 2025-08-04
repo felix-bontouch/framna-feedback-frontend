@@ -4,12 +4,9 @@ import {
 } from '@nestjs/mongoose/dist/interfaces/mongoose-options.interface'
 import * as mongoose from 'mongoose'
 
-import { clone } from '@heyform-inc/utils'
-
 import { MONGO_PASSWORD, MONGO_SSL_CA_PATH, MONGO_URI, MONGO_USER } from '@environments'
+import { clone } from '@heyform-inc/utils'
 import { Logger } from '@utils'
-
-// Setup migrations logger
 
 // Setup migrations logger
 const logger = new Logger('MongooseModule')

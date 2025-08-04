@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 
 import { helper } from '@heyform-inc/utils'
-
 import { ProjectMemberModel, ProjectModel } from '@model'
 
 @Injectable()
@@ -23,6 +22,10 @@ export class ProjectService {
       .sort({
         createdAt: -1
       })
+  }
+
+  async findOne(conditions: any) {
+    return this.projectModel.findOne(conditions)
   }
 
   async findById(id: string): Promise<ProjectModel | null> {
@@ -74,6 +77,13 @@ export class ProjectService {
     })
   }
 
+  public async findProjectByMemberId(memberId: string, projectId: string) {
+    return this.projectMemberModel.findOne({
+      memberId,
+      projectId
+    })
+  }
+
   public async findProjectsByMemberId(memberId: string): Promise<string[]> {
     const members = await this.projectMemberModel.find({
       memberId
@@ -106,7 +116,6 @@ export class ProjectService {
 
   public async addMembers(members: any): Promise<any> {
     return this.projectMemberModel.insertMany(members, {
-      // see https://docs.mongodb.com/php-library/master/reference/method/MongoDBCollection-insertMany/
       ordered: false
     })
   }
@@ -151,17 +160,13 @@ export class ProjectService {
     return result?.n > 0
   }
 
-  /**
-   * Create a project for every new team
-   */
-  async createByNewTeam(teamId: string, ownerId: string, userName: string): Promise<void> {
+  async createByNewTeam(teamId: string, ownerId: string, projectName: string): Promise<void> {
     const projectId = await this.create({
       teamId,
-      name: `${userName}'s project`,
+      name: projectName,
       ownerId
     })
 
-    // Link member with project
     await this.createMember({
       projectId,
       memberId: ownerId

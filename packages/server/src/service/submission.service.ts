@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
-
 import {
   Answer,
   SubmissionCategoryEnum,
   SubmissionStatusEnum
 } from '@heyform-inc/shared-types-enums'
-import { date, helper } from '@heyform-inc/utils'
-
-import { FormModel, SubmissionModel } from '@model'
-import { getUpdateQuery } from '@utils'
+import { Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
 
 import { FormService } from './form.service'
+import { date, helper } from '@heyform-inc/utils'
+import { SubmissionModel } from '@model'
+import { getUpdateQuery } from '@utils'
+
+const { isValid } = helper
 
 interface FindSubmissionOptions {
   formId: string
@@ -119,7 +119,7 @@ export class SubmissionService {
   async findAllGroupInFieldIds(
     formId: string,
     fieldIds: string[],
-    limit = 5
+    limit = 10
   ): Promise<SubmissionModel[]> {
     if (helper.isEmpty(fieldIds)) {
       return []
@@ -185,7 +185,7 @@ export class SubmissionService {
   public async countAllInTeam(teamId: string): Promise<number> {
     const forms = await this.formService.findAllInTeam(teamId)
 
-    if (helper.isValid(forms)) {
+    if (isValid(forms)) {
       return this.countAll(
         forms.map(f => f._id),
         {
@@ -412,35 +412,6 @@ export class SubmissionService {
     return !!result?.ok
   }
 
-  async findLocations(formId: string, start: Date, end: Date): Promise<any[]> {
-    return this.submissionModel
-      .aggregate<FormModel>([
-        {
-          $match: {
-            formId,
-            createdAt: {
-              $gte: start,
-              $lte: end
-            }
-          }
-        },
-        {
-          $sort: {
-            total: -1
-          }
-        },
-        { $limit: 10 },
-        {
-          $project: {
-            _id: 0,
-            code: '$_id',
-            total: 1
-          }
-        }
-      ])
-      .exec()
-  }
-
   async analytic(formId: string, startAt: number, endAt: number) {
     return this.submissionModel.aggregate([
       {
@@ -453,10 +424,10 @@ export class SubmissionService {
       {
         $group: {
           _id: null,
-          averageTime: {
+          avgAverageTime: {
             $avg: { $subtract: ['$endAt', '$startAt'] }
           },
-          submissionCount: { $sum: 1 }
+          avgSubmissionCount: { $sum: 1 }
         }
       }
     ])

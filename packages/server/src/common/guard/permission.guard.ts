@@ -1,9 +1,8 @@
 import { BadRequestException, CanActivate, ExecutionContext, Inject } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { GqlExecutionContext } from '@nestjs/graphql'
 
 import { helper, timestamp } from '@heyform-inc/utils'
-
+import { GqlExecutionContext } from '@nestjs/graphql'
 import { FormService, ProjectService, TeamService } from '@service'
 import { requestParser } from '@utils'
 
@@ -94,17 +93,21 @@ export class PermissionGuard implements CanActivate {
       throw new BadRequestException("You don't have permission to access the workspace")
     }
 
+    const isOwner = team.ownerId === user.id
+    if (!isOwner) {
+      throw new BadRequestException("You don't have permission to access the workspace")
+    }
+
     req.team = {
       id: teamId,
       ownerId: team.ownerId,
-      isOwner: team.ownerId === user.id,
+      isOwner,
       name: team.name,
       role: member.role,
       storageQuota: team.storageQuota,
       inviteCode: team.inviteCode
     }
 
-    // Update team member last activity date
     this.teamService.updateMember(teamId, user.id, {
       lastSeenAt: timestamp()
     })

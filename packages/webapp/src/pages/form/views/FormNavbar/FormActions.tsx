@@ -1,26 +1,26 @@
-import { FormModel } from '@heyform-inc/shared-types-enums'
 import { IconEye, IconSend2, IconShare } from '@tabler/icons-react'
 import { observer } from 'mobx-react-lite'
-import { FC, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button, notification } from '@/components/ui'
-import { FormService } from '@/service'
-import { useStore } from '@/store'
+import { FormService } from '@/services'
+
+import { Button } from '@/components'
+import { useAppStore, useFormStore } from '@/store'
 
 export const FormActions = observer(() => {
   const { t } = useTranslation()
 
-  const appStore = useStore('appStore')
-  const formStore = useStore('formStore')
+  const appStore = useAppStore()
+  const formStore = useFormStore()
   const [loading, setLoading] = useState(false)
 
   function handlePreview() {
-    appStore.isFormPreviewOpen = true
+    appStore.openModal('isFormPreviewOpen')
   }
 
   function handleShare() {
-    appStore.isFormShareModalOpen = true
+    appStore.openModal('isFormShareModalOpen')
   }
 
   async function handlePublish() {
@@ -30,19 +30,15 @@ export const FormActions = observer(() => {
     setLoading(true)
 
     try {
-      await FormService.update(formStore.current!.id, {
+      await FormService.update(formStore.form!.id, {
         active: true
       })
 
       formStore.updateSettings({
         active: true
       })
-      appStore.isFormShareModalOpen = true
-    } catch (err: any) {
-      notification.error({
-        title: 'Failed to publish form'
-      })
-    }
+      appStore.openModal('isFormShareModalOpen')
+    } catch (err: any) {}
 
     setLoading(false)
   }
@@ -60,27 +56,28 @@ export const FormActions = observer(() => {
         onClick: handleShare
       },
       {
-        label: formStore.current?.settings?.active ? t('form.published') : t('form.publish'),
+        label: formStore.form?.settings?.active ? t('form.published') : t('form.publish'),
         icon: IconSend2,
-        disabled: formStore.current?.settings?.active,
+        disabled: formStore.form?.settings?.active,
         onClick: handlePublish
       }
     ],
-    [formStore, handlePreview, handlePublish, handleShare, t]
+
+    [t]
   )
 
   return (
     <div className="flex flex-col items-center gap-2.5 md:mr-3 md:flex-row md:gap-1">
       {actions.map((action, index) => (
-        <Button.Link
+        <Button
+          variant="link"
           key={index}
           className="!flex w-full items-center !justify-start gap-3 !px-0 !py-1 !text-sm md:w-auto md:flex-col md:!justify-center md:gap-0 md:!px-1.5 md:!text-xs"
-          leading={<action.icon className="-mr-1.5 text-slate-900 md:mb-1" />}
           disabled={action.disabled}
           onClick={action.onClick}
         >
           {action.label}
-        </Button.Link>
+        </Button>
       ))}
     </div>
   )

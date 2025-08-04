@@ -2,12 +2,12 @@ import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Switch } from '@/components/ui'
+import { Switch } from '@/components'
 import { useStore } from '@/store'
 
 export const FullpageSettings: FC<IComponentProps> = observer(({ children }) => {
   const formStore = useStore('formStore')
-	const { t } = useTranslation()
+  const { t } = useTranslation()
 
   function handleChange(transparentBackground: boolean) {
     formStore.updateEmbedConfig({

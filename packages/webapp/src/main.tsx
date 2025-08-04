@@ -1,44 +1,67 @@
-import { IconMoodSad } from '@tabler/icons-react'
-import { StrictMode, Suspense } from 'react'
+import Router, { Route } from '@heyooo-inc/react-router'
+import * as Tooltip from '@radix-ui/react-tooltip'
+import { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ErrorBoundary } from 'react-error-boundary'
-import 'unfetch/polyfill/polyfill.mjs'
+import { useTranslation } from 'react-i18next'
+import { Navigate } from 'react-router-dom'
 
-import { EmptyStates } from '@/components/ui'
-import '@/locales'
-import Router from '@/router'
-import { StoreProvider, store } from '@/store'
-import { getBrowserId, setBrowserId } from '@/utils'
+import { getAuthState, getDeviceId, setCookie, setDeviceId } from '@/utils'
+import { setupDebugInterceptors } from '@/utils/debug'
 
-import './styles/index.scss'
+import { Toaster } from '@/components'
+import { REDIRECT_COOKIE_NAME } from '@/consts'
+import '@/i18n'
+import { AuthLayout } from '@/layouts'
+import routes from '@/routes'
+import '@/styles/globals.scss'
 
-if (!getBrowserId()) {
-  setBrowserId()
+if (!getDeviceId()) {
+  setDeviceId()
+}
+
+// Setup debugging in development
+setupDebugInterceptors()
+
+const Fallback = () => {
+  const { t } = useTranslation()
+
+  return (
+    <AuthLayout>
+      <h1 className="text-center text-2xl font-semibold">{t('components.error.title')}</h1>
+      <p className="text-secondary text-center text-sm/6">{t('components.error.message')}</p>
+    </AuthLayout>
+  )
 }
 
 const App = () => {
-  const Fallback = (
-    <EmptyStates
-      className="flex h-screen flex-col justify-center"
-      icon={<IconMoodSad />}
-      title="Oops, Something went wrong"
-      description="Brace yourself till we get the error fixed. You may also refresh the page or try again later."
-    />
-  )
+  function render(options?: any, children?: ReactNode) {
+    const isLoggedIn = getAuthState()
+
+    if (options?.loginRequired) {
+      if (!isLoggedIn) {
+        const redirectUri = window.location.pathname + window.location.search
+
+        setCookie(REDIRECT_COOKIE_NAME, redirectUri, {})
+        return <Navigate to="/login" replace />
+      }
+    } else {
+      if (isLoggedIn && options?.redirectIfLogged) {
+        return <Navigate to="/" replace />
+      } else {
+        return children
+      }
+    }
+  }
 
   return (
-    <ErrorBoundary fallback={Fallback}>
-      <Suspense fallback={<></>}>
-        <StoreProvider value={store}>
-          <Router />
-        </StoreProvider>
-      </Suspense>
+    <ErrorBoundary fallback={<Fallback />}>
+      <Tooltip.Provider>
+        <Router routes={routes as Route[]} render={render} />
+      </Tooltip.Provider>
+      <Toaster />
     </ErrorBoundary>
   )
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-)
+createRoot(document.getElementById('root')!).render(<App />)

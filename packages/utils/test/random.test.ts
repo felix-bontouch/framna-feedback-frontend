@@ -1,5 +1,6 @@
-import { test, expect } from 'vitest'
-import { random, RandomType } from '../src'
+import { expect, test } from 'vitest'
+
+import { RandomType, random } from '../src'
 
 const len = 6
 

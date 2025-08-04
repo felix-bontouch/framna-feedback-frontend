@@ -1,18 +1,18 @@
-import { htmlUtils } from '@heyform-inc/answer-utils'
 import { FieldLayoutAlignEnum, QUESTION_FIELD_KINDS } from '@heyform-inc/shared-types-enums'
-import { helper } from '@heyform-inc/utils'
 import clsx from 'clsx'
 import { FC, WheelEvent, useEffect, useMemo, useState } from 'react'
+
+import { questionNumber, removeHeading, replaceHTML, useTranslation } from '../utils'
+import { htmlUtils } from '@heyform-inc/answer-utils'
+import { helper } from '@heyform-inc/utils'
 
 import { Layout } from '../components'
 import { useStore } from '../store'
 import type { IComponentProps, IFormField } from '../typings'
-import { questionNumber, removeHeading, replaceHTML, useTranslation } from '../utils'
 import { useWheelScroll } from './hook'
 
 export interface BlockProps extends IComponentProps {
   field: IFormField
-  paymentBlockIndex?: number
   isScrollable?: boolean
 }
 
@@ -26,7 +26,6 @@ const SPLIT_LAYOUTS = [
 export const Block: FC<BlockProps> = ({
   className,
   field: rawField,
-  paymentBlockIndex,
   isScrollable = true,
   children,
   ...restProps
@@ -74,15 +73,11 @@ export const Block: FC<BlockProps> = ({
     if (state.scrollTo) {
       let isEntered = true
 
-      if (helper.isValid(paymentBlockIndex) && paymentBlockIndex !== state.scrollIndex) {
-        isEntered = false
-      }
-
       setTimeout(() => {
         setIsEntered(isEntered)
       }, 10)
     }
-  }, [paymentBlockIndex, state.scrollIndex, state.scrollTo])
+  }, [state.scrollIndex, state.scrollTo])
 
   return (
     <div

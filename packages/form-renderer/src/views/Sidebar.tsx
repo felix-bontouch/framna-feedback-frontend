@@ -1,14 +1,15 @@
-import { helper } from '@heyform-inc/utils'
 import clsx from 'clsx'
 import type { FC } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTransition } from 'react-transition-state'
 
+import { questionNumber, sliceFieldsByLogics, treeFields, useTranslation } from '../utils'
+import { helper } from '@heyform-inc/utils'
+
 import { Button, CollapseIcon, XIcon } from '../components'
 import { TRANSITION_UNMOUNTED_STATES } from '../consts'
 import { useStore } from '../store'
 import type { IPartialFormField } from '../typings'
-import { questionNumber, sliceFieldsByLogics, treeFields, useTranslation } from '../utils'
 
 interface QuestionProps {
   field: IPartialFormField

@@ -1,0 +1,9 @@
+{
+  "timestamp": "20250804_110312",
+  "database": "framna-feedback",
+  "version": "v0.1.0-14-g89cc4b0",
+  "branch": "feature/api-first-migration",
+  "commit": "89cc4b03899bb9b02febc2c721b5c114cebc0dad",
+  "created_by": "felixweiland",
+  "purpose": "Pre-migration backup for API-first architecture"
+}

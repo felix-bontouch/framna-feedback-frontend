@@ -1,7 +1,5 @@
 import { BullModuleOptions } from '@nestjs/bull'
 
-import { ms } from '@heyform-inc/utils'
-
 import {
   BULL_JOB_ATTEMPTS,
   BULL_JOB_BACKOFF_DELAY,
@@ -12,6 +10,7 @@ import {
   REDIS_PASSWORD,
   REDIS_PORT
 } from '@environments'
+import { ms } from '@heyform-inc/utils'
 
 export const BullOptionsFactory = (): BullModuleOptions | Promise<BullModuleOptions> => ({
   redis: {
