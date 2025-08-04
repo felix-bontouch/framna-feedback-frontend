@@ -13,8 +13,14 @@ const Login = () => {
   const router = useRouter()
 
   async function fetch(values: any) {
-    await AuthService.login(values)
-    router.replace('/')
+    try {
+      await AuthService.login(values)
+      router.replace('/')
+    } catch (error: any) {
+      console.error('Login failed:', error)
+      // The error will be handled by the Form component
+      throw error
+    }
   }
 
   return (

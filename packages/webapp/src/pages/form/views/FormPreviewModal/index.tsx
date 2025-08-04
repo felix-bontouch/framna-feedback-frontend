@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next'
 import { insertThemeStyle } from '@/utils'
 
 import { Button, Modal, Select } from '@/components'
-import { STRIPE_PUBLISHABLE_KEY } from '@/consts'
 import { useAppStore, useFormStore } from '@/store'
 
 import './index.scss'
@@ -35,23 +34,7 @@ export const FormPreviewModal: FC = observer(() => {
     if (appStore.modals.get('FormPreviewModal') && formStore.form) {
       insertWebFont(formStore.form.themeSettings!.theme!.fontFamily)
       insertThemeStyle(formStore.form.themeSettings!.theme!)
-
-      const paymentField = formStore.formFields?.find(f => f.kind == FieldKindEnum.PAYMENT)
-
-      if (!paymentField) {
-        return setIsLoaded(true)
-      }
-
-      loadScript('stripe', 'https://js.stripe.com/v3/', (err: any) => {
-        if (err) {
-          notification.error({
-            title: err.message
-          })
-          setIsLoaded(false)
-        } else {
-          setIsLoaded(true)
-        }
-      })
+      setIsLoaded(true)
     }
   }, [appStore, formStore])
 
@@ -92,12 +75,7 @@ export const FormPreviewModal: FC = observer(() => {
                 <Spin />
               </div>
             ) : (
-              <Renderer
-                form={formStore.form as any}
-                autoSave={false}
-                stripeApiKey={STRIPE_PUBLISHABLE_KEY}
-                stripeAccountId={formStore.form?.stripeAccount?.accountId}
-              />
+              <Renderer form={formStore.form as any} autoSave={false} />
             )}
           </div>
         </Modal>

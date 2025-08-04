@@ -59,15 +59,6 @@ class ResolverModule {}
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(RawBodyMiddleware)
-      .forRoutes({
-        path: '/payment/*',
-        method: RequestMethod.POST
-      })
-      .apply(FormBodyMiddleware)
-      .forRoutes('*')
-      .apply(JsonBodyMiddleware)
-      .forRoutes('*')
+    consumer.apply(FormBodyMiddleware).forRoutes('*').apply(JsonBodyMiddleware).forRoutes('*')
   }
 }

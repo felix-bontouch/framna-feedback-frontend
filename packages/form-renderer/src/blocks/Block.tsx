@@ -13,7 +13,6 @@ import { useWheelScroll } from './hook'
 
 export interface BlockProps extends IComponentProps {
   field: IFormField
-  paymentBlockIndex?: number
   isScrollable?: boolean
 }
 
@@ -27,7 +26,6 @@ const SPLIT_LAYOUTS = [
 export const Block: FC<BlockProps> = ({
   className,
   field: rawField,
-  paymentBlockIndex,
   isScrollable = true,
   children,
   ...restProps
@@ -75,15 +73,11 @@ export const Block: FC<BlockProps> = ({
     if (state.scrollTo) {
       let isEntered = true
 
-      if (helper.isValid(paymentBlockIndex) && paymentBlockIndex !== state.scrollIndex) {
-        isEntered = false
-      }
-
       setTimeout(() => {
         setIsEntered(isEntered)
       }, 10)
     }
-  }, [paymentBlockIndex, state.scrollIndex, state.scrollTo])
+  }, [state.scrollIndex, state.scrollTo])
 
   return (
     <div

@@ -76,6 +76,8 @@ export default ({ mode }: ConfigEnv) => {
     },
     server: {
       port: 3000,
+      host: true,
+      allowedHosts: ['.ngrok.app', '.ngrok-free.app', 'localhost'],
       proxy: {
         '/graphql': {
           target: env.VITE_PROXY_TARGET,

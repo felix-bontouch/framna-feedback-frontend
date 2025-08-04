@@ -8,7 +8,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--enable-source-maps nest start --watch",
-    "debug": "nest start --debug --watch",
+    "debug": "cross-env NODE_OPTIONS='--enable-source-maps --inspect=0.0.0.0:9229' nest start --watch",
     "build": "nest build",
     "start": "node --enable-source-maps dist/main.js",
     "type-check": "tsc --pretty --noEmit",
@@ -69,7 +69,6 @@
     "rxjs": "6.6.3",
     "serve-static": "2.0.0-beta.2",
     "sharp": "0.32.6",
-    "stripe": "8.140.0",
     "ts-node": "9.0.0",
     "tsconfig-paths": "3.9.0",
     "typescript": "4.9.5",

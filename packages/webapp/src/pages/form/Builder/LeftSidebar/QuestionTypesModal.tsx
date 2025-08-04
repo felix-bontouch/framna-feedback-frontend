@@ -14,22 +14,15 @@ import { QuestionIcon } from './QuestionList'
 interface QuestionTypeItemProps {
   config: typeof FIELD_WELCOME_CONFIG
   isWelcomeDisabled?: boolean
-  isPaymentDisabled?: boolean
 }
 
-const QuestionTypeItem: FC<QuestionTypeItemProps> = ({
-  config,
-  isWelcomeDisabled,
-  isPaymentDisabled
-}) => {
+const QuestionTypeItem: FC<QuestionTypeItemProps> = ({ config, isWelcomeDisabled }) => {
   const { t } = useTranslation()
 
   const { closeModal } = useAppStore()
   const { dispatch } = useStoreContext()
 
-  const isDisabled =
-    (config.kind === FieldKindEnum.WELCOME && isWelcomeDisabled) ||
-    (config.kind === FieldKindEnum.PAYMENT && isPaymentDisabled)
+  const isDisabled = config.kind === FieldKindEnum.WELCOME && isWelcomeDisabled
 
   function handleClick() {
     if (isDisabled) {
@@ -71,10 +64,6 @@ const QuestionTypesComponent = () => {
     () => state.fields.some(f => f.kind === FieldKindEnum.WELCOME),
     [state.fields]
   )
-  const isPaymentDisabled = useMemo(
-    () => state.fields.some(f => f.kind === FieldKindEnum.PAYMENT),
-    [state.fields]
-  )
 
   const groups = BLOCK_GROUPS.map(row =>
     row.map(group => ({
@@ -101,7 +90,6 @@ const QuestionTypesComponent = () => {
                       key={config.kind}
                       config={config}
                       isWelcomeDisabled={isWelcomeDisabled}
-                      isPaymentDisabled={isPaymentDisabled}
                     />
                   ))}
                 </ul>

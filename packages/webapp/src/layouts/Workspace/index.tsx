@@ -30,16 +30,17 @@ export const LoginGuard: FC<LayoutProps> = ({ options, children }) => {
   const { t } = useTranslation()
 
   const alert = useAlert()
-  const router = useRouter()
+  // const router = useRouter()
   const { user, setUser, updateUser } = useUserStore()
 
   useAsyncEffect(async () => {
     const user = await UserService.userDetail()
     setUser(user)
 
-    if (!user.isEmailVerified) {
-      return router.replace('/verify-email')
-    }
+    // Email verification temporarily disabled for development
+    // if (!user.isEmailVerified) {
+    //   return router.replace('/verify-email')
+    // }
   }, [])
 
   useEffect(() => {
@@ -198,7 +199,7 @@ export const BaseLayout: FC<LayoutProps> = ({ options, children }) => {
 
   useEffect(() => {
     if (helper.isValid(options?.title)) {
-      document.title = `${t(options!.title)} - HeyForm`
+      document.title = `${t(options!.title)} - Framna Feedback`
     }
   }, [options, t])
 
@@ -206,9 +207,9 @@ export const BaseLayout: FC<LayoutProps> = ({ options, children }) => {
     <LoginGuard>
       <div className="bg-foreground flex min-h-screen flex-col">
         <div className="bg-foreground sticky top-0 flex items-center justify-between p-4">
-          <a href="/" className="flex items-center gap-2" title="HeyForm">
+          <a href="/" className="flex items-center gap-2" title="Framna Feedback">
             <Logo className="h-8 w-auto" />
-            <span className="text-xl font-medium">HeyForm</span>
+            <span className="text-xl font-medium">Framna Feedback</span>
           </a>
 
           <WorkspaceAccount

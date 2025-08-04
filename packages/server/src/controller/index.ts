@@ -1,7 +1,5 @@
 export * from './health.controller'
-export * from './connect-stripe.controller'
 export * from './social-login.controller'
-export * from './payment-intent-webhook.controller'
 export * from './export-submissions.controller'
 export * from './image.controller'
 export * from './upload.controller'

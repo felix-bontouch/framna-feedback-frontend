@@ -91,8 +91,6 @@ export default {
   'Card number is incomplete': 'Numer karty jest niekompletny',
   'Expiry date is incomplete': 'Data ważności jest niekompletna',
   'Card cvc is incomplete': 'CVC karty jest niekompletne',
-  'Invalid payment amount': 'Nieprawidłowa kwota płatności',
-  'Invalid payment currency': 'Nieprawidłowa waluta płatności',
   reportMeta_zero: 'Brak jeszcze zgłoszeń',
   reportMeta_one: '{{count}} zgłoszenie',
   reportMeta_other: '{{count}} zgłoszeń',

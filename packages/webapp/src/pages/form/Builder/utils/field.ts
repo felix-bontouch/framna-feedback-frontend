@@ -166,18 +166,6 @@ export function getPropertiesFromKind(properties: Property, newKind: FieldKindEn
       }
       break
 
-    case FieldKindEnum.PAYMENT:
-      if (!props.currency) {
-        props.currency = 'USD'
-      }
-      if (!props.price) {
-        props.price = {
-          type: 'number',
-          value: 0
-        }
-      }
-      break
-
     case FieldKindEnum.GROUP:
       if (!helper.isArray(props.fields)) {
         props.fields = [getFieldFromKind(FieldKindEnum.SHORT_TEXT)]
@@ -254,14 +242,6 @@ export function getFieldFromKind(kind: FieldKindEnum | string): FormFieldType {
           label: ''
         }
       ]
-      break
-
-    case FieldKindEnum.PAYMENT:
-      field.properties!.currency = 'USD'
-      field.properties!.price = {
-        type: 'number',
-        value: 0
-      }
       break
 
     case FieldKindEnum.GROUP:

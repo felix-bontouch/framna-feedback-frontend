@@ -57,10 +57,6 @@ export function parsePlainAnswer(answer: Answer, livePreview = false): string {
       value = parser.inputTable(answer)
       break
 
-    case FieldKindEnum.PAYMENT:
-      value = parser.payment(answer)
-      break
-
     default:
       value = answer.value?.toString()
   }

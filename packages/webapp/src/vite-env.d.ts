@@ -33,7 +33,6 @@ declare global {
       homepageURL?: string
       websiteURL?: string
       cookieDomain?: string
-      stripePublishableKey?: string
       geetestCaptchaId?: string
       googleRecaptchaKey?: string
       appDisableRegistration?: boolean | string

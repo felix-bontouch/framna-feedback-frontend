@@ -85,7 +85,6 @@ export class FormDetailResolver {
       suspended: form.suspended || false,
       isDraft: form.isDraft || false,
       status: form.status,
-      stripeAccount: form.stripeAccount,
       version: form.version || 1,
       canPublish: form.canPublish || false,
       customReport: form.customReport || {

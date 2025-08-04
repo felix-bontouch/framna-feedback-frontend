@@ -162,8 +162,6 @@ export function CustomHead({ team, form, integrations, query }: PublicFormType) 
         <script src="https://static.geetest.com/v4/gt4.js" />
       )}
 
-      {isStripeEnabled(form) && <script id="stripe" src="https://js.stripe.com/v3/" />}
-
       {helper.isValid(integrations.googleanalytics) && (
         <GoogleAnalytics apiKey={integrations.googleanalytics} />
       )}

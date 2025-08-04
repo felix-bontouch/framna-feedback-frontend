@@ -26,7 +26,6 @@ import {
   MultipleChoice,
   Number,
   OpinionScale,
-  Payment,
   PhoneNumber,
   PictureChoice,
   Rating,
@@ -163,11 +162,6 @@ const Fields: FC = () => {
     case FieldKindEnum.THANK_YOU:
       return (
         <ThankYou key={field.id} field={field} locale={state.locale} parentField={parentField} />
-      )
-
-    case FieldKindEnum.PAYMENT:
-      return (
-        <Payment key={field.id} field={field} locale={state.locale} parentField={parentField} />
       )
 
     default:

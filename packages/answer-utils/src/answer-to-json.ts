@@ -76,13 +76,6 @@ function parseJsonAnswer(answer: Answer, plain = false): any {
       }
       break
 
-    case FieldKindEnum.PAYMENT:
-      value = answer.value
-      if (plain) {
-        value = parser.payment(answer)
-      }
-      break
-
     default:
       value = answer.value?.toString()
   }

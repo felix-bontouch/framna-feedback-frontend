@@ -90,8 +90,6 @@ export default {
   'Card number is incomplete': 'Číslo karty není kompletní',
   'Expiry date is incomplete': 'Datum expirace není kompletní',
   'Card cvc is incomplete': 'CVC karty není kompletní',
-  'Invalid payment amount': 'Neplatná částka platby',
-  'Invalid payment currency': 'Neplatná měna platby',
   reportMeta_zero: 'Zatím žádné záznamy',
   reportMeta_one: '{{count}} záznamů',
   reportMeta_other: '{{count}} záznamů',

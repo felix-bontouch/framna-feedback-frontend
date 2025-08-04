@@ -7,7 +7,6 @@ import CoverAndLayout from './CoverAndLayout'
 import DateSettings from './Date'
 import MultipleChoiceSettings from './MultipleChoice'
 import OpinionScaleSettings from './OpinionScale'
-import PaymentSettings from './Payment'
 import PhoneNumberSettings from './PhoneNumber'
 import RatingSettings from './Rating'
 import RequiredSettings, { RequiredSettingsProps } from './Required'
@@ -42,9 +41,6 @@ const Settings = ({ field }: RequiredSettingsProps) => {
 
       case FieldKindEnum.THANK_YOU:
         return <ThankYouSettings field={field} />
-
-      case FieldKindEnum.PAYMENT:
-        return <PaymentSettings field={field} />
 
       default:
         return null

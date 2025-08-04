@@ -102,13 +102,6 @@ export const GOOGLE_LOGIN_CLIENT_SECRET: string = process.env.GOOGLE_LOGIN_CLIEN
 export const DISABLE_LOGIN_WITH_GOOGLE =
   helper.isEmpty(GOOGLE_LOGIN_CLIENT_ID) || helper.isEmpty(GOOGLE_LOGIN_CLIENT_SECRET)
 
-// Stripe
-export const STRIPE_VERSION: string = process.env.STRIPE_VERSION
-export const STRIPE_PUBLISHABLE_KEY: string = process.env.STRIPE_PUBLISHABLE_KEY
-export const STRIPE_SECRET_KEY: string = process.env.STRIPE_SECRET_KEY
-export const STRIPE_CONNECT_CLIENT_ID: string = process.env.STRIPE_CONNECT_CLIENT_ID
-export const STRIPE_WEBHOOK_SECRET_KEY: string = process.env.STRIPE_WEBHOOK_SECRET_KEY
-
 // Bull
 export const BULL_JOB_ATTEMPTS: number = +process.env.BULL_JOB_ATTEMPTS || 3
 export const BULL_JOB_TIMEOUT: string = process.env.BULL_JOB_TIMEOUT || '1m'
@@ -135,7 +128,7 @@ export const UNSPLASH_CLIENT_ID: string = process.env.UNSPLASH_CLIENT_ID
 // OpenAI
 export const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-export const OPENAI_GPT_MODEL = process.env.OPENAI_GPT_MODEL || 'gpt-3.5-turbo-0125'
+export const OPENAI_GPT_MODEL = process.env.OPENAI_GPT_MODEL || 'gpt-4o-mini'
 
 // S3
 export const S3_ENDPOINT = process.env.S3_ENDPOINT

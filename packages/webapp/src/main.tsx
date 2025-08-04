@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router-dom'
 
 import { getAuthState, getDeviceId, setCookie, setDeviceId } from '@/utils'
+import { setupDebugInterceptors } from '@/utils/debug'
 
 import { Toaster } from '@/components'
 import { REDIRECT_COOKIE_NAME } from '@/consts'
@@ -18,6 +19,9 @@ import '@/styles/globals.scss'
 if (!getDeviceId()) {
   setDeviceId()
 }
+
+// Setup debugging in development
+setupDebugInterceptors()
 
 const Fallback = () => {
   const { t } = useTranslation()

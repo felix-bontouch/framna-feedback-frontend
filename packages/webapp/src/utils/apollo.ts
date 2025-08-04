@@ -75,9 +75,19 @@ const client = new ApolloClient({
 })
 
 function responseInterceptor<T = Any>(response: ApolloQueryResult<T>): T {
-  const operationName = Object.keys(response)[0]
+  if (!response || typeof response !== 'object') {
+    return response as T
+  }
 
-  return JSON.parse(JSON.stringify((response as Any)[operationName]))
+  // If response has only one key (the operation name), extract its value
+  const keys = Object.keys(response)
+  if (keys.length === 1) {
+    const operationName = keys[0]
+    return JSON.parse(JSON.stringify((response as Any)[operationName]))
+  }
+
+  // Otherwise return the whole response
+  return response as T
 }
 
 export const apollo = {

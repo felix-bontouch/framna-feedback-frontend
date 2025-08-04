@@ -71,10 +71,6 @@ export { UpdateSubmissionAnswerResolver } from './submission/update-submission-a
 export { SubmissionAnswersResolver } from './submission/submission-answers.resolver'
 export { UpdateSubmissionsCategoryResolver } from './submission/update-submissions-category.resolver'
 
-export { StripeAuthorizeUrlResolver } from './payment/stripe-authorize-url.resolver'
-export { ConnectStripeResolver } from './payment/connect-stripe.resolver'
-export { RevokeStripeAccountResolver } from './payment/revoke-stripe-account.resolver'
-
 export { UserDetailResolver } from './user/user-detail.resolver'
 export { UpdateUserResolver } from './user/update-user.resolver'
 export { ChangeEmailCodeResolver } from './user/change-email-code.resolver'

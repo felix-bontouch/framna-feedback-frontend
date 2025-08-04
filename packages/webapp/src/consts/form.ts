@@ -24,7 +24,6 @@ import IconLongText from '@/assets/long-text.svg?react'
 import IconMultipleIcon from '@/assets/multiple-choice.svg?react'
 import IconNumber from '@/assets/number.svg?react'
 import IconOpinionScale from '@/assets/opinion-scale.svg?react'
-import IconPayment from '@/assets/payment.svg?react'
 import IconPhoneNumber from '@/assets/phone-number.svg?react'
 import IconPictureChoice from '@/assets/picture-choice.svg?react'
 import IconQuestionGroup from '@/assets/question-group.svg?react'
@@ -83,13 +82,6 @@ export const STANDARD_FIELD_CONFIGS = [
     label: 'form.builder.question.longText',
     textColor: '#15803d',
     backgroundColor: '#dcfce7'
-  },
-  {
-    kind: FieldKindEnum.PAYMENT,
-    icon: IconPayment,
-    label: 'form.builder.question.payment',
-    textColor: '#a16207',
-    backgroundColor: '#fef9c3'
   },
   {
     kind: FieldKindEnum.GROUP,
@@ -297,10 +289,6 @@ export const BLOCK_GROUPS = [
     {
       name: 'form.builder.question.date',
       list: [FieldKindEnum.DATE, FieldKindEnum.DATE_RANGE]
-    },
-    {
-      name: 'form.builder.question.payment',
-      list: [FieldKindEnum.PAYMENT]
     }
   ],
   [

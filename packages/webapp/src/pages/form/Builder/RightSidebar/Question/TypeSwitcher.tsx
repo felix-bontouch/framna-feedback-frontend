@@ -27,10 +27,7 @@ export default function TypeSwitcher() {
     return configs.map(row => ({
       value: row.kind,
       icon: <row.icon className="h-6 w-6 rounded p-0.5" />,
-      label: t(row.label),
-      disabled:
-        row.kind === FieldKindEnum.PAYMENT &&
-        state.fields.some(f => f.kind === FieldKindEnum.PAYMENT)
+      label: t(row.label)
     }))
   }, [isDisabled, state.fields, t])
 

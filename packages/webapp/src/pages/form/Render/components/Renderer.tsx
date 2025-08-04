@@ -15,7 +15,6 @@ import { FC, useEffect, useRef, useState } from 'react'
 
 import { EndpointService } from '../service/endpoint'
 import { geeTestToken, initGeeTest, recaptchaToken } from '../utils/captcha'
-import { isStripeEnabled } from '../utils/payment'
 import { Uploader } from '../utils/uploader'
 import { helper } from '@heyform-inc/utils'
 
@@ -45,7 +44,7 @@ export const Renderer: FC<RendererProps> = ({ form, query, locale, contactId }) 
     setIsPasswordChecked(true)
   }
 
-  async function handleSubmit(values: Any, partialSubmission?: boolean, stripe?: Any) {
+  async function handleSubmit(values: Any, partialSubmission?: boolean) {
     try {
       let token: Record<string, Any> = {}
 
@@ -88,23 +87,6 @@ export const Renderer: FC<RendererProps> = ({ form, query, locale, contactId }) 
         partialSubmission,
         ...(token || {})
       })
-
-      if (stripe && helper.isValid(clientSecret)) {
-        const paymentField = form.fields?.find(f => f.kind === FieldKindEnum.PAYMENT)
-
-        if (paymentField) {
-          const result = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-              card: stripe.elements.getElement('cardNumber'),
-              billing_details: values[paymentField.id]?.billingDetails
-            }
-          })
-
-          if (result.error) {
-            throw new Error(result.error.message)
-          }
-        }
-      }
 
       sendMessageToParent('FORM_SUBMITTED')
     } catch (err: Any) {
@@ -162,14 +144,10 @@ export const Renderer: FC<RendererProps> = ({ form, query, locale, contactId }) 
         <script src="https://static.geetest.com/v4/gt4.js" />
       )}
 
-      {isStripeEnabled(form) && <script id="stripe" src="https://js.stripe.com/v3/" />}
-
       <FormRenderer
         form={form as Any}
         query={query}
         locale={locale}
-        stripeApiKey={(form as Any).stripe?.publishableKey}
-        stripeAccountId={(form as Any).stripe?.accountId}
         autoSave={!(form.settings?.enableTimeLimit && helper.isValid(form.settings?.timeLimit))}
         alwaysShowNextButton={true}
         customUrlRedirects={(form.settings as Any)?.customUrlRedirects}

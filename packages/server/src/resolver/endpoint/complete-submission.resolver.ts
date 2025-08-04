@@ -1,7 +1,6 @@
 import {
   Answer,
   CaptchaKindEnum,
-  FieldKindEnum,
   SubmissionCategoryEnum,
   SubmissionStatusEnum,
   Variable
@@ -18,7 +17,6 @@ import {
   FormReportService,
   FormService,
   IntegrationService,
-  PaymentService,
   SubmissionIpLimitService,
   SubmissionService
 } from '@service'
@@ -33,8 +31,7 @@ export class CompleteSubmissionResolver {
     private readonly submissionService: SubmissionService,
     private readonly submissionIpLimitService: SubmissionIpLimitService,
     private readonly formReportService: FormReportService,
-    private readonly integrationService: IntegrationService,
-    private readonly paymentService: PaymentService
+    private readonly integrationService: IntegrationService
   ) {}
 
   @Mutation(returns => CompleteSubmissionType)
@@ -158,29 +155,7 @@ export class CompleteSubmissionResolver {
       status
     })
 
-    // Payment
-    const answer = answers.find(a => a.kind === FieldKindEnum.PAYMENT)
     const result: CompleteSubmissionType = {}
-
-    if (helper.isValid(answer) && helper.isValid(form.stripeAccount)) {
-      result.clientSecret = await this.paymentService.createPaymentIntent({
-        amount: answer.value.amount,
-        currency: answer.value.currency,
-        stripeAccountId: form.stripeAccount.accountId,
-        metadata: {
-          submissionId,
-          fieldId: answer.id
-        }
-      })
-
-      await this.submissionService.updateAnswer(submissionId, {
-        ...answer,
-        value: {
-          ...answer.value,
-          clientSecret: result.clientSecret
-        }
-      })
-    }
 
     // Form report Queue
     this.formReportService.addQueue(form.id)

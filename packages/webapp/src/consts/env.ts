@@ -17,8 +17,6 @@ export const CDN_UPLOAD_URL = import.meta.env.VITE_CDN_UPLOAD_URL as string
 export const COOKIE_DOMAIN =
   window.heyform?.cookieDomain || (import.meta.env.VITE_COOKIE_DOMAIN as string)
 
-export const STRIPE_PUBLISHABLE_KEY =
-  window.heyform?.stripePublishableKey || (import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string)
 export const GEETEST_CAPTCHA_ID =
   window.heyform?.geetestCaptchaId || (import.meta.env.VITE_GEETEST_CAPTCHA_ID as string)
 export const GOOGLE_RECAPTCHA_KEY =

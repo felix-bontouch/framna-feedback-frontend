@@ -90,8 +90,6 @@ export default {
   'Card number is incomplete': 'Kart numarası eksik',
   'Expiry date is incomplete': 'Son kullanma tarihi eksik',
   'Card cvc is incomplete': 'Kart CVC kodu eksik',
-  'Invalid payment amount': 'Geçersiz ödeme tutarı',
-  'Invalid payment currency': 'Geçersiz ödeme para birimi',
   reportMeta_zero: 'Henüz gönderim yok',
   reportMeta_one: '{{count}} gönderim',
   reportMeta_other: '{{count}} gönderim',

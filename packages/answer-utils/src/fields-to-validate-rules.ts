@@ -100,12 +100,7 @@ function convert(field: FormField): FieldsToValidateRules {
     rule.format = getDateFormat(field.properties!.format!, field.properties?.allowTime)
   }
 
-  // Payment
-  if (helper.isNumeric(String(field.properties?.price))) {
-    rule.price = field.properties!.price
-  }
-
-  // Rating, payment and opinion_scale
+  // Rating and opinion_scale
   if (
     helper.isValid(field.properties?.total) &&
     helper.isNumeric(String(field.properties?.total), { no_symbols: true })

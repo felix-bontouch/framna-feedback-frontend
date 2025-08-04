@@ -90,16 +90,6 @@ export interface Layout {
   align?: FieldLayoutAlignEnum
 }
 
-export interface NumberPrice {
-  type: 'number'
-  value: number
-}
-
-export interface VariablePrice {
-  type: 'variable'
-  ref: string
-}
-
 export interface Property {
   // Statement
   showButton?: boolean
@@ -130,10 +120,6 @@ export interface Property {
 
   // PhoneNumber
   defaultCountryCode?: string
-
-  // Payment
-  currency?: string
-  price?: NumberPrice | VariablePrice
 
   // Date
   format?: string
@@ -224,11 +210,6 @@ export interface ThemeSettings {
   theme?: FormTheme
 }
 
-export interface StripeAccount {
-  accountId: string
-  email: string
-}
-
 export interface FormModel {
   id: string
   teamId: string
@@ -245,7 +226,6 @@ export interface FormModel {
   translations?: Record<string, Record<string, any>>
   variables?: Variable[]
   columns?: FormField[]
-  stripeAccount?: StripeAccount
   submissionCount?: number
   themeSettings?: ThemeSettings
   retentionAt: number
@@ -291,26 +271,6 @@ export interface DateRangeValue {
   end?: string
 }
 
-export interface ServerSidePaymentValue {
-  amount: number
-  currency: string
-  applicationFeeAmount: number
-  clientSecret: string
-  // Save from webhook
-  paymentIntentId: string
-  billingDetails: {
-    name: string
-  }
-  receiptUrl: string
-}
-
-export interface ClientSidePaymentValue {
-  cardCvc: boolean
-  cardExpiry: boolean
-  cardNumber: boolean
-  name: string
-}
-
 export type InputTableValue = Array<Record<string, string>>
 
 export type AnswerValue =
@@ -320,8 +280,6 @@ export type AnswerValue =
   | FullNameValue
   | DateRangeValue
   | InputTableValue
-  | ServerSidePaymentValue
-  | ClientSidePaymentValue
   | any
 
 export interface StringVariable {

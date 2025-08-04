@@ -1,4 +1,4 @@
-import { Answer, FullNameValue, ServerSidePaymentValue } from '@heyform-inc/shared-types-enums'
+import { Answer, FullNameValue } from '@heyform-inc/shared-types-enums'
 import Big from 'big.js'
 
 import { helper } from '@heyform-inc/utils'
@@ -89,20 +89,6 @@ function inputTable(answer: Answer): string {
   return ''
 }
 
-function payment(answer: Answer): string {
-  const value = answer.value as ServerSidePaymentValue
-  const price = Big(value.amount).div(100).toFixed(2)
-  let result = CURRENCY_SYMBOLS[value.currency] + price
-
-  if (helper.isValid(value.paymentIntentId)) {
-    result = `Succeeded ${result}`
-  } else {
-    result = `Incomplete ${result}`
-  }
-
-  return result
-}
-
 export default {
   fileUpload,
   rating,
@@ -112,6 +98,5 @@ export default {
   address,
   legalTerms,
   dateRange,
-  inputTable,
-  payment
+  inputTable
 }

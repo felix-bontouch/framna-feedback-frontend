@@ -259,43 +259,6 @@ const OpinionScaleItem: FC<SubmissionCellProps> = ({ answer, field, isTableCell 
   )
 }
 
-const PaymentItem: FC<SubmissionCellProps> = ({ answer, field }) => {
-  if (answer.kind !== field.kind || !helper.isObject(answer.value)) {
-    return null
-  }
-
-  const amount = answer.value.amount || 0
-  const amountString = CURRENCY_SYMBOLS[answer.value.currency] + Big(amount).div(100).toFixed(2)
-  const isCompleted = helper.isValid(answer.value.paymentIntentId)
-
-  return (
-    <div className="flex items-center">
-      <div className="flex flex-1 items-center overflow-hidden truncate">
-        {isCompleted ? (
-          <div className="flex h-6 items-center rounded bg-green-100 pl-1 pr-2 text-sm text-green-800">
-            <IconCheck className="h-4 w-4" />
-            <span className="ml-1">Succeeded</span>
-          </div>
-        ) : (
-          <div className="text-primary flex h-6 items-center rounded bg-gray-100 pl-1 pr-2 text-sm">
-            <IconClock className="h-4 w-4" />
-            <span className="ml-1">Incomplete</span>
-          </div>
-        )}
-        <div className="ml-2">{amountString}</div>
-      </div>
-
-      {isCompleted && (
-        <div className="ml-2">
-          <a href={answer.value.receiptUrl} target="_blank" rel="noreferrer">
-            <IconArrowUpRight className="h-4 w-4" />
-          </a>
-        </div>
-      )}
-    </div>
-  )
-}
-
 const SignatureItem: FC<SubmissionCellProps> = ({ answer, field }) => {
   if (answer.kind !== field.kind || !helper.isURL(answer.value)) {
     return null
@@ -382,9 +345,6 @@ export default function SubmissionCell(props: SubmissionCellProps) {
 
     case FieldKindEnum.INPUT_TABLE:
       return <InputTableItem {...props} />
-
-    case FieldKindEnum.PAYMENT:
-      return <PaymentItem {...props} />
 
     default:
       return <TextItem {...props} />

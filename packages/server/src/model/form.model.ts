@@ -6,7 +6,6 @@ import {
   HiddenField,
   FormModel as IForModel,
   InteractiveModeEnum,
-  StripeAccount,
   ThemeSettings
 } from '@heyform-inc/shared-types-enums'
 import { Logic, Variable } from '@heyform-inc/shared-types-enums'
@@ -79,9 +78,6 @@ export class FormModel extends Document {
 
   @Prop()
   themeSettings?: ThemeSettings
-
-  @Prop()
-  stripeAccount?: StripeAccount
 
   @Prop({ default: -1 })
   retentionAt?: number

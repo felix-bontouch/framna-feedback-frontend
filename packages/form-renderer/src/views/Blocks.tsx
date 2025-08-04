@@ -17,7 +17,6 @@ import { LongText } from '../blocks/LongText'
 import { MultipleChoice } from '../blocks/MultipleChoice'
 import { Number } from '../blocks/Number'
 import { OpinionScale } from '../blocks/OpinionScale'
-import { Payment } from '../blocks/Payment'
 import { PhoneNumber } from '../blocks/PhoneNumber'
 import { PictureChoice } from '../blocks/PictureChoice'
 import { Rating } from '../blocks/Rating'
@@ -94,9 +93,6 @@ function getBlock(field: FormField, blockIndex?: number) {
     case FieldKindEnum.SHORT_TEXT:
       return <ShortText key={field.id} field={field} />
 
-    case FieldKindEnum.PAYMENT:
-      return <Payment key={field.id} field={field} paymentBlockIndex={blockIndex} />
-
     default:
       return <Statement key={field.id} field={field} />
   }
@@ -104,26 +100,10 @@ function getBlock(field: FormField, blockIndex?: number) {
 
 const Main: FC = () => {
   const { state } = useStore()
-  const paymentIndex = useMemo(
-    () => state.fields.findIndex(field => field.kind === FieldKindEnum.PAYMENT),
-    []
-  )
   const currentField = useMemo(
     () => getBlock(state.fields[state.scrollIndex!]),
     [state.scrollIndex]
   )
-
-  if (paymentIndex > -1) {
-    const paymentBlock = getBlock(state.fields[paymentIndex], paymentIndex)
-
-    return (
-      <>
-        {state.scrollIndex! < paymentIndex && currentField}
-        {paymentBlock}
-        {state.scrollIndex! > paymentIndex && currentField}
-      </>
-    )
-  }
 
   return currentField
 }

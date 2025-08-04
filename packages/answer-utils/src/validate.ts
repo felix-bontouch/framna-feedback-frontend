@@ -89,10 +89,6 @@ export function validate(rule: FieldsToValidateRules, value: AnswerValue): void 
       validateFile(rule, value)
       break
 
-    case FieldKindEnum.PAYMENT:
-      validatePayment(rule, value)
-      break
-
     case FieldKindEnum.FULL_NAME:
       validateFullName(rule, value)
       break
@@ -475,66 +471,6 @@ function validateAddress(rule: FieldsToValidateRules, value: AnswerValue) {
       kind: rule.kind,
       title: rule.title,
       message: 'Please select country'
-    })
-  }
-}
-
-function validatePayment(rule: FieldsToValidateRules, value: AnswerValue) {
-  if (helper.isValid(process.env.VALIDATE_CLIENT_SIDE)) {
-    if (!helper.isValid(value.name)) {
-      throw new ValidateError({
-        id: rule.id,
-        kind: rule.kind,
-        title: rule.title,
-        message: 'Name on card is incomplete'
-      })
-    }
-
-    if (!helper.isTrue(value.cardNumber)) {
-      throw new ValidateError({
-        id: rule.id,
-        kind: rule.kind,
-        title: rule.title,
-        message: 'Card number is incomplete'
-      })
-    }
-
-    if (!helper.isTrue(value.cardExpiry)) {
-      throw new ValidateError({
-        id: rule.id,
-        kind: rule.kind,
-        title: rule.title,
-        message: 'Expiry date is incomplete'
-      })
-    }
-
-    if (!helper.isTrue(value.cardCvc)) {
-      throw new ValidateError({
-        id: rule.id,
-        kind: rule.kind,
-        title: rule.title,
-        message: 'Card cvc is incomplete'
-      })
-    }
-
-    return
-  }
-
-  if (helper.isEmpty(value.amount) || value.amount < 0) {
-    throw new ValidateError({
-      id: rule.id,
-      kind: rule.kind,
-      title: rule.title,
-      message: 'Invalid payment amount'
-    })
-  }
-
-  if (helper.isEmpty(value.currency)) {
-    throw new ValidateError({
-      id: rule.id,
-      kind: rule.kind,
-      title: rule.title,
-      message: 'Invalid payment currency'
     })
   }
 }

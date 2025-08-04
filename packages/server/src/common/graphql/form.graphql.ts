@@ -1057,15 +1057,6 @@ export class PageBackgroundType {
 //
 
 @ObjectType()
-class StripeAccountType {
-  @Field()
-  accountId: string
-
-  @Field()
-  email: string
-}
-
-@ObjectType()
 export class FormCustomReportType {
   @Field()
   id: string
@@ -1125,9 +1116,6 @@ export class FormType {
 
   @Field(type => [GraphQLJSONObject], { nullable: true })
   variables?: Variable[]
-
-  @Field(type => StripeAccountType, { nullable: true })
-  stripeAccount?: StripeAccountType
 
   @Field(type => ThemeSettingsType, { nullable: true })
   themeSettings?: ThemeSettingsType
