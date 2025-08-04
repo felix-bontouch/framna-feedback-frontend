@@ -1,9 +1,5 @@
-<div align="center">
-  <h1 align="center">
-    Framna Feedback
-  </h1>
-  <p>Framna Feedback is a form builder forked from the open-source projet [Heyform](https://github.com/heyform/heyform) that allows anyone to create engaging conversational forms for surveys, questionnaires, quizzes, and polls. No coding skills required.</p>
-</div>
+# Framna Feedback
+Framna Feedback is a form builder forked from the open-source projet [Heyform](https://github.com/heyform/heyform) that allows anyone to create engaging conversational forms for surveys, questionnaires, quizzes, and polls. No coding skills required.
 
 <img src="./assets/images/screenshot.png" alt="Framna Feedback" />
 

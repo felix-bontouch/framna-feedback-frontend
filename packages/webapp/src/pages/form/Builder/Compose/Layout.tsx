@@ -27,13 +27,6 @@ function filterStyle(brightness?: number) {
 }
 
 export const Layout: FC<LayoutProps> = ({ className, layout, ...restProps }) => {
-  if (!helper.isURL(layout?.mediaUrl)) {
-    return null
-  }
-
-  return (
-    <div className={cn('heyform-layout', className)} {...restProps}>
-      <img src={layout!.mediaUrl} style={filterStyle(layout?.brightness)} />
-    </div>
-  )
+  // Layout images are disabled - no images allowed in forms
+  return null
 }

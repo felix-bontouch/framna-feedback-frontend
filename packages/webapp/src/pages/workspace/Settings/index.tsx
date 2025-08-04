@@ -2,8 +2,6 @@ import { useTranslation } from 'react-i18next'
 
 import { AnchorNavigation } from '@/components'
 
-import BrandKitModal from './BrandKitModal'
-import WorkspaceBranding from './Branding'
 import WorkspaceDeletion from './Deletion'
 import WorkspaceDeletionModal from './DeletionModal'
 import WorkspaceGeneral from './General'
@@ -28,10 +26,6 @@ export default function WorkspaceSettings() {
                     value: 'general'
                   },
                   {
-                    label: t('settings.branding.title'),
-                    value: 'branding'
-                  },
-                  {
                     label: t('settings.deletion.title'),
                     value: 'deletion'
                   }
@@ -41,14 +35,12 @@ export default function WorkspaceSettings() {
 
             <div className="flex-1">
               <WorkspaceGeneral />
-              <WorkspaceBranding />
               <WorkspaceDeletion />
             </div>
           </div>
         </div>
       </div>
 
-      <BrandKitModal />
       <WorkspaceDeletionModal />
     </>
   )

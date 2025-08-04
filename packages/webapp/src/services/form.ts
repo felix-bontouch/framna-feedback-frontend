@@ -2,7 +2,6 @@ import {
   FormField,
   FormKindEnum,
   FormStatusEnum,
-  FormTheme,
   HiddenField,
   HiddenFieldAnswer,
   InteractiveModeEnum,
@@ -18,7 +17,6 @@ import {
   CREATE_FORM_FIELD_GQL,
   CREATE_FORM_GQL,
   CREATE_FORM_LOGICS_WITH_AI_GQL,
-  CREATE_FORM_THEME_WITH_AI_GQL,
   CREATE_FORM_WITH_AI_GQL,
   DELETE_FORM_FIELD_GQL,
   DELETE_FORM_GQL,
@@ -46,7 +44,6 @@ import {
   UPDATE_FORM_INTEGRATIONS_GQL,
   UPDATE_FORM_LOGICS_GQL,
   UPDATE_FORM_SCHEMAS_GQL,
-  UPDATE_FORM_THEME_GQL,
   UPDATE_FORM_VARIABLES_GQL,
   USE_TEMPLATE_GQL,
   VERIFY_FORM_PASSWORD_GQL
@@ -54,7 +51,7 @@ import {
 import { TemplateType } from '@/types'
 
 interface ChatOptions {
-  onMessage: (data: AnyMap) => void
+  onMessage: (data: any) => void
   onError: (error: string) => void
   onClose: () => void
 }
@@ -143,19 +140,6 @@ export class FormService {
     })
   }
 
-  static createThemesWithAI(formId: string, prompt: string, theme: string) {
-    return apollo.mutate({
-      mutation: CREATE_FORM_THEME_WITH_AI_GQL,
-      variables: {
-        input: {
-          formId,
-          prompt,
-          theme
-        }
-      }
-    })
-  }
-
   static import(projectId: string, url: string) {
     return apollo.mutate({
       mutation: IMPORT_FORM_GQL,
@@ -165,6 +149,18 @@ export class FormService {
           url
         }
       }
+    })
+  }
+
+  static async importFromJSON(projectId: string, formJson: string) {
+    // Parse JSON and create form
+    const formData = JSON.parse(formJson)
+    // Use create method with the parsed data
+    return this.create({
+      projectId,
+      name: formData.name || 'Imported Form',
+      interactiveMode: formData.interactiveMode || 0,
+      kind: formData.kind || 0
     })
   }
 
@@ -302,15 +298,6 @@ export class FormService {
           formId,
           allowArchive
         }
-      }
-    })
-  }
-
-  static updateTheme(input: { formId: string; theme: FormTheme; logo?: string }) {
-    return apollo.mutate({
-      mutation: UPDATE_FORM_THEME_GQL,
-      variables: {
-        input
       }
     })
   }
@@ -491,5 +478,26 @@ export class FormService {
         }
       }
     })
+  }
+
+  static updateCustomReport(input: {
+    formId: string
+    hiddenFields?: string[]
+    theme?: any
+    enablePublicAccess?: boolean
+  }) {
+    return apollo.mutate({
+      mutation: UPDATE_FORM_GQL,
+      variables: {
+        input
+      }
+    })
+  }
+
+  static chat(formId: string, prompt: string, options: ChatOptions) {
+    // Placeholder for AI chat functionality
+    setTimeout(() => {
+      options.onError('AI chat functionality has been removed')
+    }, 100)
   }
 }

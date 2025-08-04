@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useStoreContext } from '../../store'
-import CoverAndLayout from './CoverAndLayout'
 import DateSettings from './Date'
 import MultipleChoiceSettings from './MultipleChoice'
 import OpinionScaleSettings from './OpinionScale'
@@ -73,9 +72,6 @@ export default function Question() {
         <div className="text-sm/6 font-medium">{t('form.builder.settings.title')}</div>
         <Settings field={state.currentField} />
       </div>
-
-      {/* Cover layout */}
-      <CoverAndLayout />
     </div>
   )
 }

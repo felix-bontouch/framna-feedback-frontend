@@ -188,16 +188,6 @@ export function getFieldFromKind(kind: FieldKindEnum | string): FormFieldType {
 
   switch (kind) {
     case FieldKindEnum.MULTIPLE_CHOICE:
-    case FieldKindEnum.PICTURE_CHOICE:
-      field.properties!.allowMultiple = false
-      field.properties!.verticalAlignment = true
-      field.properties!.choices = [
-        {
-          id: nanoid(12),
-          label: ''
-        }
-      ]
-      break
 
     case FieldKindEnum.RATING:
       field.properties!.total = 5

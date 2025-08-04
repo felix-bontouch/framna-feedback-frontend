@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Tabs } from '@/components'
 
 import { useStoreContext } from '../store'
-import Design from './Design'
 import { Logic } from './Logic'
 import Question from './Question'
 
@@ -18,11 +17,6 @@ export default function BuilderRightSidebar() {
         value: 'question',
         label: t('form.builder.question.title'),
         content: <Question />
-      },
-      {
-        value: 'design',
-        label: t('form.builder.design.title'),
-        content: <Design />
       },
       {
         value: 'logic',

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { UserService } from '@/services'
 
-import { Button, ImageFormPicker, Input, Modal, usePrompt } from '@/components'
+import { Button, Input, Modal, ProfileImagePicker, usePrompt } from '@/components'
 import { useAppStore, useModal, useUserStore } from '@/store'
 
 const UserAccount = () => {
@@ -24,20 +24,6 @@ const UserAccount = () => {
     },
     {
       debounceWait: 300,
-      manual: true
-    }
-  )
-
-  const { run: handleAvatarChange } = useRequest(
-    async (avatar?: string) => {
-      const updates = {
-        avatar
-      }
-
-      updateUser(updates)
-      await UserService.update(updates)
-    },
-    {
       manual: true
     }
   )
@@ -93,18 +79,29 @@ const UserAccount = () => {
     })
   }
 
+  const { run: handleAvatarChange } = useRequest(
+    async (avatar?: string) => {
+      const updates = {
+        avatar
+      }
+
+      updateUser(updates)
+      await UserService.update(updates)
+    },
+    {
+      manual: true
+    }
+  )
+
   return (
     <div className="mt-4 space-y-8">
-      <div className="space-y-2">
-        <div className="space-y-1">
-          <div className="block text-sm font-medium leading-6 text-gray-900">
-            {t('user.avatar.headline')}
-          </div>
-          <p data-slot="text" className="text-secondary text-base/5 sm:text-sm/5">
-            {t('user.avatar.subHeadline')}
-          </p>
-        </div>
-        <ImageFormPicker value={user?.avatar} fallback={user?.name} onChange={handleAvatarChange} />
+      <div className="space-y-1">
+        <div className="text-base/7 font-medium sm:text-sm/5">{t('user.avatar.headline')}</div>
+        <ProfileImagePicker
+          value={user?.avatar}
+          fallback={user?.name}
+          onUpload={handleAvatarChange}
+        />
       </div>
 
       <div className="space-y-1">

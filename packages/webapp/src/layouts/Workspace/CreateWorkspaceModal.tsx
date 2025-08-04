@@ -6,7 +6,7 @@ import { WorkspaceService } from '@/services'
 import { clearCookie, getCookie, useRouter } from '@/utils'
 import { helper } from '@heyform-inc/utils'
 
-import { Form, ImageFormPicker, Input, Modal, SimpleFormProps } from '@/components'
+import { Form, Input, Modal, SimpleFormProps } from '@/components'
 import { DEFAULT_PROJECT_NAMES, REDIRECT_COOKIE_NAME } from '@/consts'
 import { useModal, useUserStore } from '@/store'
 import { useAppStore } from '@/store'
@@ -77,22 +77,6 @@ export const CreateWorkspaceForm: FC<
         ]}
       >
         <Input autoComplete="off" />
-      </Form.Item>
-
-      <Form.Item
-        name="avatar"
-        label={
-          <Trans
-            key="avatar"
-            t={t}
-            i18nKey="workspace.creation.logo"
-            components={{
-              span: <span className="text-secondary" />
-            }}
-          />
-        }
-      >
-        <ImageFormPicker fallback={name} />
       </Form.Item>
     </Form.Simple>
   )

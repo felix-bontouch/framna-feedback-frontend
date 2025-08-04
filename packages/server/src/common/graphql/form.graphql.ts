@@ -351,6 +351,15 @@ export class CreateFormWithAIInput {
 export class FormDetailInput {
   @Field()
   formId: string
+
+  @Field({
+    nullable: true,
+    description:
+      'Platform requesting the form data. Use "mobile" to get simplified data without visual/theme elements. Defaults to "web" for full form data including themes.'
+  })
+  @IsOptional()
+  @IsIn(['web', 'mobile'])
+  platform?: 'web' | 'mobile'
 }
 
 @InputType()

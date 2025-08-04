@@ -1,16 +1,17 @@
 import { Auth, FormGuard, Team } from '@decorator'
-import { FormDetailInput, FormType, PublicFormType } from '@graphql'
+import { FormDetailInput, FormType, MobileFormType, PublicFormType } from '@graphql'
 import { date } from '@heyform-inc/utils'
 import { FormModel, TeamModel } from '@model'
 import { Args, Query, Resolver } from '@nestjs/graphql'
-import { FormService, SubmissionService } from '@service'
+import { FormService, MobileTransformerService, SubmissionService } from '@service'
 
 @Resolver()
 @Auth()
 export class FormDetailResolver {
   constructor(
     private readonly formService: FormService,
-    private readonly submissionService: SubmissionService
+    private readonly submissionService: SubmissionService,
+    private readonly mobileTransformerService: MobileTransformerService
   ) {}
 
   @Query(returns => FormType)
@@ -34,7 +35,9 @@ export class FormDetailResolver {
   }
 
   @Query(returns => PublicFormType)
-  async publicForm(@Args('input') input: FormDetailInput): Promise<PublicFormType> {
+  async publicForm(
+    @Args('input') input: FormDetailInput
+  ): Promise<PublicFormType | MobileFormType> {
     const form = await this.formService.findPublicForm(input.formId)
 
     if (!form) {
@@ -49,6 +52,12 @@ export class FormDetailResolver {
       throw new Error('Form projectId is required')
     }
 
+    // Check if mobile platform is requested
+    if (input.platform === 'mobile') {
+      return this.mobileTransformerService.transformFormForMobile(form)
+    }
+
+    // Default web response with all theme and visual data
     const integrations: Record<string, any> = {}
 
     if (form.settings?.active) {

@@ -18,7 +18,6 @@ import { MultipleChoice } from '../blocks/MultipleChoice'
 import { Number } from '../blocks/Number'
 import { OpinionScale } from '../blocks/OpinionScale'
 import { PhoneNumber } from '../blocks/PhoneNumber'
-import { PictureChoice } from '../blocks/PictureChoice'
 import { Rating } from '../blocks/Rating'
 import { ShortText } from '../blocks/ShortText'
 import { Signature } from '../blocks/Signature'
@@ -65,9 +64,6 @@ function getBlock(field: FormField, blockIndex?: number) {
 
     case FieldKindEnum.PHONE_NUMBER:
       return <PhoneNumber key={field.id} field={field} />
-
-    case FieldKindEnum.PICTURE_CHOICE:
-      return <PictureChoice key={field.id} field={field} />
 
     case FieldKindEnum.RATING:
       return <Rating key={field.id} field={field} />

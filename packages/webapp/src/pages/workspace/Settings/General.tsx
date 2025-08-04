@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { WorkspaceService } from '@/services'
 import { useParam } from '@/utils'
 
-import { ImageFormPicker, Input } from '@/components'
+import { Input, ProfileImagePicker } from '@/components'
 import { useWorkspaceStore } from '@/store'
 
 export default function WorkspaceGeneral() {
@@ -50,30 +50,21 @@ export default function WorkspaceGeneral() {
 
       <div className="mt-4 space-y-8">
         <div className="space-y-2">
+          <label className="text-primary block text-sm/6 font-medium leading-6">
+            {t('settings.general.avatar')}
+          </label>
+          <ProfileImagePicker
+            value={workspace?.avatar}
+            fallback={workspace?.name}
+            onUpload={handleAvatarChange}
+          />
+        </div>
+
+        <div className="space-y-2">
           <label htmlFor="name" className="text-primary block text-sm/6 font-medium leading-6">
             {t('settings.general.name')}
           </label>
           <Input id="name" value={workspace?.name} onChange={handleNameChange} />
-        </div>
-
-        <div className="space-y-2">
-          <div className="space-y-1">
-            <label className="block text-sm font-medium leading-6 text-gray-900">
-              {t('settings.general.logo')}
-            </label>
-            <p data-slot="text" className="text-secondary text-base/5 sm:text-sm/5">
-              {t('settings.general.pickLogo')}
-            </p>
-          </div>
-          <ImageFormPicker
-            value={workspace?.avatar}
-            fallback={workspace?.name}
-            resize={{
-              width: 100,
-              height: 100
-            }}
-            onChange={handleAvatarChange}
-          />
         </div>
       </div>
     </section>

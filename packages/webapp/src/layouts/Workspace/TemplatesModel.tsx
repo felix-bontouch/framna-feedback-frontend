@@ -1,10 +1,9 @@
-import { FormRenderer, insertWebFont } from '@heyform-inc/form-renderer'
+import { FormRenderer } from '@heyform-inc/form-renderer'
 import { IconChevronLeft, IconUpload } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { insertThemeStyle } from '@/pages/form/Builder/utils'
 import { FormService } from '@/services'
 import { cn, scrollIntoViewIfNeeded, useParam, useRouter } from '@/utils'
 import { slugify } from '@heyform-inc/utils'
@@ -76,11 +75,6 @@ const TemplatePreview: FC<TemplatePreviewProps> = ({ template: rawTemplate, onBa
 
     return true
   }
-
-  useEffect(() => {
-    insertWebFont(template?.themeSettings?.theme?.fontFamily)
-    insertThemeStyle(template?.themeSettings?.theme)
-  }, [template?.themeSettings?.theme])
 
   return (
     <div className="h-[calc(90vh-3.125rem)] w-[90vw]">

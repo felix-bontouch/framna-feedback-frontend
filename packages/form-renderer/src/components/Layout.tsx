@@ -24,19 +24,8 @@ function filterStyle(brightness?: number) {
 }
 
 const LayoutComponent: FC<FormLayout> = props => {
-  if (helper.isEmpty(props) || !isURL(props!.mediaUrl)) {
-    return null
-  }
-
-  return (
-    <div className={`heyform-layout heyform-layout-${props!.align}`}>
-      <img
-        src={props!.mediaUrl}
-        style={filterStyle(props!.brightness)}
-        alt="HeyForm layout image"
-      />
-    </div>
-  )
+  // Layout images are disabled - no images allowed in forms
+  return null
 }
 
 export const Layout = memo(LayoutComponent, deepEqual)

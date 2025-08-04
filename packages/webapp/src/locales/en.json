@@ -414,7 +414,14 @@
       "reselectFile": "Re-select file to upload",
       "invalidType": "Unsupported file type",
       "exceedsMaxSize": "The file you selected exceeds the {{maxSize}} limit",
-      "uploading": "Uploading..."
+      "uploading": "Uploading...",
+      "uploadImage": "Upload image"
+    },
+    "profileImagePicker": {
+      "title": "Upload Profile Image",
+      "description": "Choose an image for your profile",
+      "uploadTitle": "Click to upload or drag and drop",
+      "uploadDescription": "JPG, PNG, WEBP or GIF (max. 5MB)"
     },
     "password": {
       "invalid": "Password must be at least 8 characters, and at least 1 uppercase, 1 lowercase and 1 number."
@@ -620,6 +627,7 @@
     "general": {
       "title": "General",
       "name": "Name",
+      "avatar": "Avatar",
       "logo": "Logo",
       "pickLogo": "Pick a logo for your workspace."
     },

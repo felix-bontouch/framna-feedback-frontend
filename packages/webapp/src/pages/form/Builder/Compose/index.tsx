@@ -27,7 +27,6 @@ import {
   Number,
   OpinionScale,
   PhoneNumber,
-  PictureChoice,
   Rating,
   ShortText,
   Signature,
@@ -121,16 +120,6 @@ const Fields: FC = () => {
     case FieldKindEnum.PHONE_NUMBER:
       return (
         <PhoneNumber key={field.id} field={field} locale={state.locale} parentField={parentField} />
-      )
-
-    case FieldKindEnum.PICTURE_CHOICE:
-      return (
-        <PictureChoice
-          key={field.id}
-          field={field}
-          locale={state.locale}
-          parentField={parentField}
-        />
       )
 
     case FieldKindEnum.RATING:

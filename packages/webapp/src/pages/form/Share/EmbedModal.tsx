@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useParam } from '@/utils'
 import { helper } from '@heyform-inc/utils'
 
-import { Button, ColorPicker, Input, Modal, Select, Switch } from '@/components'
+import { Button, Input, Modal, Select, Switch } from '@/components'
 import { FORM_EMBED_OPTIONS } from '@/consts'
 import { useAppStore, useFormStore, useModal, useWorkspaceStore } from '@/store'
 
@@ -239,18 +239,6 @@ const ModalEmbed: FC<ComponentProps> = ({ children }) => {
       </div>
 
       {children}
-
-      <div className="flex items-center justify-between">
-        <div className="text-sm/6">{t('form.share.embed.triggerBackground')}</div>
-        <ColorPicker
-          value={embedConfig.triggerBackground}
-          contentProps={{
-            side: 'right',
-            align: 'center'
-          }}
-          onChange={triggerBackground => updateEmbedConfig({ triggerBackground })}
-        />
-      </div>
 
       {embedType === 'modal' && (
         <div className="space-y-1">
