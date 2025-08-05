@@ -730,10 +730,14 @@
       "tip2": "注意: この操作は元に戻せません。このプロジェクトに関連するすべてのデータが永久に削除されます。",
       "tip3": "プロジェクトを削除すると、そのデータにアクセスできなくなります。",
       "code": {
-        "label": "<strong>{{email}}</strong> に送信された削除コードを入力してください。",
-        "required": "確認コードは空欄にできません"
+        "label": "Type \"delete\" to confirm deletion",
+        "required": "確認コードは空欄にできません",
+        "placeholder": "Type delete here",
+        "invalid": "Please type \"delete\" exactly"
       },
-      "confirm": "プロジェクトを削除"
+      "confirm": "プロジェクトを削除",
+      "invalidCode": "Invalid confirmation",
+      "invalidCodeMessage": "Please type \"delete\" to confirm project deletion"
     },
     "moveto": {
       "headline": "'{{name}}' を移動する",

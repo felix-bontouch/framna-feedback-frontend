@@ -33,8 +33,22 @@ export class ImageController {
     const width = input.w ? Number(input.w) : undefined
     const height = input.h ? Number(input.h) : undefined
 
+    // Always process through sharp to handle EXIF orientation correctly
+    const sharpInstance = sharp(result.body)
+
+    // Get metadata to check if there's EXIF orientation
+    const metadata = await sharpInstance.metadata()
+
     if (width > 0 || height > 0) {
-      fileBuffer = await sharp(result.body).resize({ width, height }).toBuffer()
+      // Only auto-rotate if there's EXIF orientation data
+      if (metadata.orientation && metadata.orientation > 1) {
+        fileBuffer = await sharpInstance.rotate().resize({ width, height }).toBuffer()
+      } else {
+        fileBuffer = await sharpInstance.resize({ width, height }).toBuffer()
+      }
+    } else if (metadata.orientation && metadata.orientation > 1) {
+      // Even without resize, we need to correct orientation if present
+      fileBuffer = await sharpInstance.rotate().toBuffer()
     }
 
     const headers = {

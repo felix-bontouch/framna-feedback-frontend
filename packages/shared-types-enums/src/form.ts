@@ -54,6 +54,16 @@ export interface FormSettings {
   enableClosedMessage?: boolean
   closedFormTitle?: string
   closedFormDescription?: string
+
+  // Mobile app category
+  mobileCategory?:
+    | 'NPS'
+    | 'FEATURE'
+    | 'USER_FLOW'
+    | 'PERFORMANCE'
+    | 'GENERAL'
+    | 'ONBOARDING'
+    | 'RATING'
 }
 
 export interface Choice {

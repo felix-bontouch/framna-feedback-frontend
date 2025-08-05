@@ -544,6 +544,7 @@ export const FORM_DETAIL_GQL = gql`
         metaTitle
         metaDescription
         metaOGImageUrl
+        mobileCategory
       }
       drafts {
         id

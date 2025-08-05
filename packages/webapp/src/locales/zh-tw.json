@@ -730,10 +730,14 @@
       "tip2": "請注意，此操作不可逆，將永久刪除與該專案相關的所有資料。",
       "tip3": "一旦確認刪除專案，您將無法再訪問該專案的數據。",
       "code": {
-        "label": "請輸入發送到 <strong>{{email}}</strong> 的刪除代碼。",
-        "required": "驗證碼不能為空"
+        "label": "Type \"delete\" to confirm deletion",
+        "required": "驗證碼不能為空",
+        "placeholder": "Type delete here",
+        "invalid": "Please type \"delete\" exactly"
       },
-      "confirm": "刪除專案"
+      "confirm": "刪除專案",
+      "invalidCode": "Invalid confirmation",
+      "invalidCodeMessage": "Please type \"delete\" to confirm project deletion"
     },
     "moveto": {
       "headline": "將 '{{name}}' 移動到",

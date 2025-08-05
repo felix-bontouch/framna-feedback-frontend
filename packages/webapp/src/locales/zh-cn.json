@@ -730,10 +730,14 @@
       "tip2": "请注意，此操作不可逆，将永久删除与该项目相关的所有数据。",
       "tip3": "一旦确认删除项目，您将无法再访问该项目的数据。",
       "code": {
-        "label": "请输入发送到 <strong>{{email}}</strong> 的删除代码。",
-        "required": "验证码不能为空"
+        "label": "Type \"delete\" to confirm deletion",
+        "required": "验证码不能为空",
+        "placeholder": "Type delete here",
+        "invalid": "Please type \"delete\" exactly"
       },
-      "confirm": "删除项目"
+      "confirm": "删除项目",
+      "invalidCode": "Invalid confirmation",
+      "invalidCodeMessage": "Please type \"delete\" to confirm project deletion"
     },
     "moveto": {
       "headline": "将 '{{name}}' 移动到",

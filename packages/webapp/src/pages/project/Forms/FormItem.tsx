@@ -323,7 +323,7 @@ const FormItem: FC<FormItemProps> = ({ form, isInTrash, onChange }) => {
 
       <div className="flex items-center gap-4">
         {!isInTrash && !form.suspended && (
-          <div className="_hidden flex items-center group-hover:block">
+          <div className="flex hidden items-center group-hover:flex">
             <Tooltip label={t('components.edit')}>
               <Button.Link size="sm" iconOnly onClick={handleEdit}>
                 <IconPencil className="h-5 w-5" />

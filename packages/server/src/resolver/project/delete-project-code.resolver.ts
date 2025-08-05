@@ -4,15 +4,11 @@ import { Auth, Project, ProjectGuard, Team, User } from '@decorator'
 import { ProjectDetailInput } from '@graphql'
 import { ProjectModel, TeamModel, UserModel } from '@model'
 import { Args, Query, Resolver } from '@nestjs/graphql'
-import { AuthService, MailService } from '@service'
 
 @Resolver()
 @Auth()
 export class DeleteProjectCodeResolver {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly mailService: MailService
-  ) {}
+  constructor() {}
 
   @ProjectGuard()
   @Query(returns => Boolean)
@@ -26,15 +22,8 @@ export class DeleteProjectCodeResolver {
       throw new BadRequestException("You don't have permission to delete the project")
     }
 
-    const key = `verify_delete_project:${project.id}`
-    const code = await this.authService.getVerificationCode(key)
-
-    this.mailService.projectDeletionRequest(user.email, {
-      teamName: team.name,
-      projectName: project.name,
-      code
-    })
-
+    // No longer sending email verification codes
+    // Just return true to maintain API compatibility
     return true
   }
 }

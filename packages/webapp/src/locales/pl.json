@@ -730,10 +730,14 @@
       "tip2": "Pamiętaj, że ta operacja jest nieodwracalna i trwale wymaże wszystkie dane związane z tym projektem.",
       "tip3": "Po potwierdzeniu usunięcia projektu nie będziesz mieć dostępu do danych projektu.",
       "code": {
-        "label": "Wprowadź kod usunięcia wysłany na <strong>{{email}}</strong>.",
-        "required": "Kod weryfikacyjny nie może być pusty"
+        "label": "Type \"delete\" to confirm deletion",
+        "required": "Kod weryfikacyjny nie może być pusty",
+        "placeholder": "Type delete here",
+        "invalid": "Please type \"delete\" exactly"
       },
-      "confirm": "Usuń projekt"
+      "confirm": "Usuń projekt",
+      "invalidCode": "Invalid confirmation",
+      "invalidCodeMessage": "Please type \"delete\" to confirm project deletion"
     },
     "moveto": {
       "headline": "Przenieś '{{name}}' do",

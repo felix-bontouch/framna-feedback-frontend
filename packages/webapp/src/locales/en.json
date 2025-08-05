@@ -744,14 +744,23 @@
       "tip2": "Keep in mind this operation is irreversible and will permanently erase all data linked to this project.",
       "tip3": "Once you confirm the deletion of the project, you will no longer be able to access the project data.",
       "code": {
-        "label": "Enter deletion code sent to <strong>{{email}}</strong>.",
-        "required": "The verification code is not allow to be empty"
+        "label": "Type \"delete\" to confirm deletion",
+        "required": "The verification code is not allow to be empty",
+        "placeholder": "Type delete here",
+        "invalid": "Please type \"delete\" exactly"
       },
-      "confirm": "Delete project"
+      "confirm": "Delete project",
+      "invalidCode": "Invalid confirmation",
+      "invalidCodeMessage": "Please type \"delete\" to confirm project deletion"
     }
   },
   "form": {
     "menuTip": "Rename, duplicate and more...",
+    "create": "Create",
+    "implementation": {
+      "title": "Implementation"
+    },
+    "connect": "Connect",
     "metadata_zero": "No submissions yet · Edited {{date}}",
     "metadata_one": "{{count}} submission · Edited {{date}}",
     "metadata_other": "{{count}} submissions · Edited {{date}}",
@@ -1173,7 +1182,7 @@
         "title": "General",
         "archive": {
           "headline": "Submission archive",
-          "subHeadline": "Turn off the submission archive if you prefer HeyForm not to save your submissions."
+          "subHeadline": "Turn off the submission archive if you prefer Framna Feedback not to save your submissions."
         },
         "redirect": {
           "headline": "Redirect on completion",

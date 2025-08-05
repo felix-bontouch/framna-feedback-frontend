@@ -1,4 +1,4 @@
-import { IconEye, IconSend2, IconShare } from '@tabler/icons-react'
+import { IconEye, IconSend2 } from '@tabler/icons-react'
 import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,10 +19,6 @@ export const FormActions = observer(() => {
     appStore.openModal('isFormPreviewOpen')
   }
 
-  function handleShare() {
-    appStore.openModal('isFormShareModalOpen')
-  }
-
   async function handlePublish() {
     if (loading) {
       return
@@ -37,7 +33,7 @@ export const FormActions = observer(() => {
       formStore.updateSettings({
         active: true
       })
-      appStore.openModal('isFormShareModalOpen')
+      // Form is now published
     } catch (err: any) {}
 
     setLoading(false)
@@ -49,11 +45,6 @@ export const FormActions = observer(() => {
         label: t('form.preview'),
         icon: IconEye,
         onClick: handlePreview
-      },
-      {
-        label: t('form.share'),
-        icon: IconShare,
-        onClick: handleShare
       },
       {
         label: formStore.form?.settings?.active ? t('form.published') : t('form.publish'),

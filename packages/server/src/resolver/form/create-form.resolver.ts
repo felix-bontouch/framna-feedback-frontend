@@ -50,7 +50,8 @@ export class CreateFormResolver {
         locale: 'en',
         enableQuestionList: true,
         enableNavigationArrows: true,
-        enableEmailNotification: true
+        enableEmailNotification: true,
+        mobileCategory: input.mobileCategory || 'GENERAL'
       },
       hiddenFields: [],
       version: 0,

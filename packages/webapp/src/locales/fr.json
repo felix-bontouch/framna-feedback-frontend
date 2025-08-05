@@ -730,10 +730,14 @@
       "tip2": "Gardez à l'esprit que cette opération est irréversible et effacera définitivement toutes les données liées à ce projet.",
       "tip3": "Une fois que vous confirmez la suppression du projet, vous ne pourrez plus accéder aux données du projet.",
       "code": {
-        "label": "Entrez le code de suppression envoyé à <strong>{{email}}</strong>.",
-        "required": "Le code de vérification ne doit pas être vide"
+        "label": "Type \"delete\" to confirm deletion",
+        "required": "Le code de vérification ne doit pas être vide",
+        "placeholder": "Type delete here",
+        "invalid": "Please type \"delete\" exactly"
       },
-      "confirm": "Supprimer le projet"
+      "confirm": "Supprimer le projet",
+      "invalidCode": "Invalid confirmation",
+      "invalidCodeMessage": "Please type \"delete\" to confirm project deletion"
     },
     "moveto": {
       "headline": "Déplacer '{{name}}' vers",

@@ -14,10 +14,10 @@ import SignUp from '@/pages/auth/SignUp'
 import VerifyEmail from '@/pages/auth/VerifyEmail'
 import FormAnalytics from '@/pages/form/Analytics'
 import FormBuilder from '@/pages/form/Builder'
+import FormImplementation from '@/pages/form/Implementation'
 import FormIntegrations from '@/pages/form/Integrations'
 import FormRender from '@/pages/form/Render'
 import FormSettings from '@/pages/form/Settings'
-import FormShare from '@/pages/form/Share'
 import FormSubmissions from '@/pages/form/Submissions'
 import ProjectForms from '@/pages/project/Forms'
 import ProjectTrash from '@/pages/project/Trash'
@@ -177,12 +177,12 @@ const routes = [
     }
   },
   {
-    path: '/workspace/:workspaceId/project/:projectId/form/:formId/share',
+    path: '/workspace/:workspaceId/project/:projectId/form/:formId/implementation',
     layout: FormLayout,
-    component: FormShare,
+    component: FormImplementation,
     options: {
       loginRequired: true,
-      title: 'form.share.title'
+      title: 'Implementation'
     }
   },
   {

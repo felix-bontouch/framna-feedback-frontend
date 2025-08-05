@@ -15,8 +15,8 @@ export const Navigation = () => {
       icon: IconEdit
     },
     {
-      to: `/workspace/${workspaceId}/project/${projectId}/form/${formId}/connect`,
-      label: t('form.connect'),
+      to: `/workspace/${workspaceId}/project/${projectId}/form/${formId}/implementation`,
+      label: t('form.implementation'),
       icon: IconBolt
     },
     {

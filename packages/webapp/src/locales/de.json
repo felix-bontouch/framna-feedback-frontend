@@ -730,10 +730,14 @@
       "tip2": "Beachten Sie, dass dieser Vorgang unwiderruflich ist und alle mit diesem Projekt verknüpften Daten dauerhaft gelöscht werden.",
       "tip3": "Sobald Sie die Löschung des Projekts bestätigen, können Sie nicht mehr auf die Projektdaten zugreifen.",
       "code": {
-        "label": "Geben Sie den Löschcode ein, der an <strong>{{email}}</strong> gesendet wurde.",
-        "required": "Der Bestätigungscode darf nicht leer sein"
+        "label": "Type \"delete\" to confirm deletion",
+        "required": "Der Bestätigungscode darf nicht leer sein",
+        "placeholder": "Type delete here",
+        "invalid": "Please type \"delete\" exactly"
       },
-      "confirm": "Projekt löschen"
+      "confirm": "Projekt löschen",
+      "invalidCode": "Invalid confirmation",
+      "invalidCodeMessage": "Please type \"delete\" to confirm project deletion"
     },
     "moveto": {
       "headline": "Verschiebe '{{name}}' nach",

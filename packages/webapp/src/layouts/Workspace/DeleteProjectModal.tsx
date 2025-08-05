@@ -1,12 +1,11 @@
-import { useBoolean, useRequest } from 'ahooks'
-import { useEffect } from 'react'
+import { useBoolean } from 'ahooks'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { ProjectService } from '@/services'
 import { useParam, useRouter } from '@/utils'
 
 import { Form, Input, Modal, useToast } from '@/components'
-import { useModal, useUserStore, useWorkspaceStore } from '@/store'
+import { useModal, useWorkspaceStore } from '@/store'
 
 export default function DeleteProjectModal() {
   const { t } = useTranslation()
@@ -15,35 +14,20 @@ export default function DeleteProjectModal() {
   const router = useRouter()
 
   const { workspaceId } = useParam()
-  const { user } = useUserStore()
   const { deleteProject } = useWorkspaceStore()
 
   const { isOpen, payload, onOpenChange } = useModal('DeleteProjectModal')
   const [loading, { set }] = useBoolean(false)
 
-  const { run } = useRequest(
-    async () => {
-      await ProjectService.deleteCode(payload.id)
-    },
-    {
-      manual: true,
-      refreshDeps: [payload?.id],
-      onSuccess: () => {
-        toast({
-          title: t('project.delete.sentSuccess'),
-          message: t('resetPassword.subHeadline', { email: user?.email })
-        })
-      },
-      onError: err => {
-        toast({
-          title: t('project.delete.sentFailed'),
-          message: err.message
-        })
-      }
-    }
-  )
-
   async function fetch(values: any) {
+    if (values.code !== 'delete') {
+      toast({
+        title: t('project.delete.invalidCode'),
+        message: t('project.delete.invalidCodeMessage')
+      })
+      return
+    }
+
     await ProjectService.delete(payload.id, values.code)
 
     deleteProject(workspaceId, payload.id)
@@ -51,12 +35,6 @@ export default function DeleteProjectModal() {
 
     router.replace(`/workspace/${workspaceId}`)
   }
-
-  useEffect(() => {
-    if (payload) {
-      run()
-    }
-  }, [payload])
 
   return (
     <Modal.Simple
@@ -100,26 +78,19 @@ export default function DeleteProjectModal() {
       >
         <Form.Item
           name="code"
-          label={
-            <Trans
-              t={t}
-              i18nKey="project.delete.code.label"
-              values={{
-                email: user?.email
-              }}
-              components={{
-                strong: <strong />
-              }}
-            />
-          }
+          label={t('project.delete.code.label')}
           rules={[
             {
               required: true,
               message: t('project.delete.code.required')
+            },
+            {
+              pattern: /^delete$/,
+              message: t('project.delete.code.invalid')
             }
           ]}
         >
-          <Input autoComplete="off" />
+          <Input autoComplete="off" placeholder={t('project.delete.code.placeholder')} />
         </Form.Item>
       </Form.Simple>
     </Modal.Simple>

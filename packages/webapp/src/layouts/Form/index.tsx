@@ -67,9 +67,9 @@ export const FormLayout: FC<LayoutProps> = ({ options, children }) => {
         to: `/workspace/${workspaceId}/project/${projectId}/form/${formId}/integrations`
       },
       {
-        value: 'share',
-        label: t('form.share.title'),
-        to: `/workspace/${workspaceId}/project/${projectId}/form/${formId}/share`
+        value: 'implementation',
+        label: t('form.implementation.title'),
+        to: `/workspace/${workspaceId}/project/${projectId}/form/${formId}/implementation`
       },
       {
         value: 'settings',

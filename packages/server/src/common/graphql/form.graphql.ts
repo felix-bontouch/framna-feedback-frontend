@@ -332,6 +332,15 @@ export class CreateFormInput {
   @Field(type => Number)
   @IsEnum(Object.values(FormKindEnum))
   kind: FormKindEnum
+
+  @Field({ nullable: true })
+  @IsOptional()
+  description?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsIn(['NPS', 'FEATURE', 'USER_FLOW', 'PERFORMANCE', 'GENERAL', 'ONBOARDING', 'RATING'])
+  mobileCategory?: string
 }
 
 @InputType()
@@ -581,6 +590,11 @@ export class UpdateFormInput extends FormDetailInput {
   @Field({ nullable: true })
   @IsOptional()
   enableEmailNotification?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsIn(['NPS', 'FEATURE', 'USER_FLOW', 'PERFORMANCE', 'GENERAL', 'ONBOARDING', 'RATING'])
+  mobileCategory?: string
 }
 
 @InputType()
@@ -993,6 +1007,9 @@ export class FormSettingType {
 
   @Field({ nullable: true })
   enableEmailNotification?: boolean
+
+  @Field({ nullable: true })
+  mobileCategory?: string
 }
 
 @ObjectType()

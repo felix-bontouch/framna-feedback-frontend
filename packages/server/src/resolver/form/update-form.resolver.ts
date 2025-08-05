@@ -46,7 +46,8 @@ export class UpdateFormResolver {
       ['allowArchive', 'settings.allowArchive'],
       ['password', 'settings.password'],
       ['requirePassword', 'settings.requirePassword'],
-      ['enableEmailNotification', 'settings.enableEmailNotification']
+      ['enableEmailNotification', 'settings.enableEmailNotification'],
+      ['mobileCategory', 'settings.mobileCategory']
     ])
 
     if (helper.isTrue(input.redirectOnCompletion)) {

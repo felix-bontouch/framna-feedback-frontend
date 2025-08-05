@@ -7,6 +7,7 @@ import { useParam, useRouter } from '@/utils'
 
 import IconAI from '@/assets/ai.svg?react'
 import { Button, Form, Input } from '@/components'
+import { useModal } from '@/store'
 
 import { TemplatesModelProps } from './TemplatesModel'
 
@@ -16,6 +17,7 @@ export default function CreateWithAIModel({ onBack }: TemplatesModelProps) {
   const router = useRouter()
   const { workspaceId, projectId } = useParam()
   const [rcForm] = Form.useForm()
+  const { closeModal } = useModal()
 
   const examples = useMemo(
     () => Array.from({ length: 3 }).map((_, index) => t(`form.ai.topic.examples.${index}`)),
@@ -28,6 +30,7 @@ export default function CreateWithAIModel({ onBack }: TemplatesModelProps) {
       ...values
     })
 
+    closeModal('CreateFormModal')
     router.push(`/workspace/${workspaceId}/project/${projectId}/form/${formId}/create`)
   }
 
