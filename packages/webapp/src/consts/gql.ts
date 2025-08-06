@@ -644,7 +644,7 @@ export const UPDATE_FORM_SCHEMAS_GQL = gql`
   }
 `
 
-export const PUBLISH_FORM_SQL = gql`
+export const PUBLISH_FORM_GQL = gql`
   mutation publishForm($input: UpdateFormSchemasInput!) {
     publishForm(input: $input)
   }

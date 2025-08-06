@@ -176,12 +176,33 @@ const SelectComponent: FC<SelectProps> = ({
   const { t } = useTranslation()
 
   const value = useMemo(() => {
+    console.log('Select component value debug:', {
+      rawValue,
+      rawValueType: typeof rawValue,
+      isArray: Array.isArray(rawValue),
+      isEmpty: helper.isEmpty(rawValue),
+      returnOptionAsValue,
+      valueKey,
+      options: rawOptions.map(o => ({ [valueKey]: o[valueKey], [labelKey]: o[labelKey] }))
+    })
+
     if (helper.isEmpty(rawValue)) {
-      return
+      return undefined
     }
 
-    return returnOptionAsValue ? String(rawValue[valueKey]) : String(rawValue)
-  }, [rawValue, returnOptionAsValue, valueKey])
+    // Fix: Handle array values that shouldn't be arrays for single select
+    if (Array.isArray(rawValue)) {
+      console.warn('Select component received array value for single select:', rawValue)
+      // Take the first item if it's an array
+      const firstValue = rawValue.length > 0 ? rawValue[0] : undefined
+      if (!firstValue) return undefined
+      return returnOptionAsValue ? String(firstValue[valueKey]) : String(firstValue)
+    }
+
+    const result = returnOptionAsValue ? String(rawValue[valueKey]) : String(rawValue)
+    console.log('Select final value:', result)
+    return result
+  }, [rawValue, returnOptionAsValue, valueKey, rawOptions, labelKey])
 
   const options = useMemo(
     () =>
@@ -330,15 +351,27 @@ const MultiSelect: FC<MultiSelectProps> = ({
     [rawOptions, valueKey, labelKey, multiLanguage, t]
   )
 
-  const selected = useMemo(() => options.filter(row => value.includes(row.value)), [options, value])
+  // Fix: Ensure value is always an array and handle edge cases
+  const safeValue = useMemo(() => {
+    if (!value) return []
+    if (!Array.isArray(value)) return []
+    return value
+  }, [value])
+
+  const selected = useMemo(
+    () => options.filter(row => safeValue.includes(row.value)),
+    [options, safeValue]
+  )
 
   const handleSelect = useCallback(
     (itemValue: string) => {
       onChange?.(
-        value.includes(itemValue) ? value.filter(v => v !== itemValue) : [...value, itemValue]
+        safeValue.includes(itemValue)
+          ? safeValue.filter(v => v !== itemValue)
+          : [...safeValue, itemValue]
       )
     },
-    [onChange, value]
+    [onChange, safeValue]
   )
 
   const handleRemove = useCallback(
@@ -424,7 +457,7 @@ const MultiSelect: FC<MultiSelectProps> = ({
                   className="text-primary aria-selected:bg-accent-light grid cursor-pointer grid-cols-[theme(spacing.5),1fr] items-center gap-x-2.5 rounded-lg py-2.5 pl-2 pr-3.5 text-base/6 outline-none sm:grid-cols-[theme(spacing.4),1fr] sm:py-1.5 sm:pl-1.5 sm:pr-3 sm:text-sm/6 [&_[data-slot=item]]:col-start-2 [&_[data-slot=item]]:flex [&_[data-slot=item]]:items-center [&_[data-slot=item]]:gap-x-2.5 [&_[data-slot=item]]:sm:gap-x-2"
                   onSelect={handleSelect}
                 >
-                  {value.includes(row.value) && <IconCheck className="h-4 w-4" />}
+                  {safeValue.includes(row.value) && <IconCheck className="h-4 w-4" />}
                   <div data-slot="item">
                     {row.icon}
                     {row.label}

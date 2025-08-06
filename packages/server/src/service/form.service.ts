@@ -130,11 +130,11 @@ export class FormService {
     })
   }
 
-  async findAllByFieldLength(maxLength = 2) {
-    return this.formModel.find({
-      $where: `this.fields.length <= ${maxLength}`
-    })
-  }
+  // async findAllByFieldLength(maxLength = 2) {
+  //   return this.formModel.find({
+  //     $where: `this.fields.length <= ${maxLength}`
+  //   })
+  // }
 
   public async countMaps(projectIds: string[]): Promise<any> {
     return this.formModel

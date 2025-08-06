@@ -9,8 +9,6 @@ import {
   IconSettings,
   IconShare
 } from '@tabler/icons-react'
-import { useRequest } from 'ahooks'
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -19,7 +17,8 @@ import { FormService } from '@/services'
 import { useParam, useRouter } from '@/utils'
 import { helper } from '@heyform-inc/utils'
 
-import { Button, Loader, Tooltip, usePrompt, useToast } from '@/components'
+import { Button, Loader, Tooltip, usePrompt } from '@/components'
+import { usePublishForm } from '@/hooks'
 import { useAppStore, useFormStore, useWorkspaceStore } from '@/store'
 
 import WorkspaceAccount from '../../../layouts/Workspace/WorkspaceAccount'
@@ -29,7 +28,6 @@ export default function BuilderNavBar() {
   const { t } = useTranslation()
 
   const router = useRouter()
-  const toast = useToast()
   const prompt = usePrompt()
 
   const { workspaceId, projectId, formId } = useParam()
@@ -38,38 +36,14 @@ export default function BuilderNavBar() {
   const { workspace, project } = useWorkspaceStore()
   const { form, updateForm } = useFormStore()
 
-  const { loading, run } = useRequest(
-    async () => {
-      if (
-        (helper.isValid(form?.version) && form!.version > 0) ||
-        (form!.version === 0 && !form?.fieldsUpdatedAt)
-      ) {
-        const { fields } = getFilteredFields(state.fields!)
-
-        await FormService.publishForm({
-          formId,
-          version: form!.version as number,
-          drafts: fields
-        })
-
-        updateForm({
-          canPublish: false
-        })
-
-        router.push(`/workspace/${workspaceId}/project/${projectId}/form/${formId}/share`)
-      }
-    },
-    {
-      manual: true,
-      refreshDeps: [formId, state.fields, form?.version],
-      onError: (err: any) => {
-        toast({
-          title: t('components.error.title'),
-          message: err.message
-        })
-      }
+  const { publishForm, loading } = usePublishForm({
+    onSuccess: () => {
+      updateForm({
+        canPublish: false
+      })
+      router.push(`/workspace/${workspaceId}/project/${projectId}/form/${formId}/share`)
     }
-  )
+  })
 
   function handlePreview() {
     openModal('PreviewModal')
@@ -79,8 +53,21 @@ export default function BuilderNavBar() {
     router.push(`/workspace/${workspaceId}/project/${projectId}/form/${formId}/${route}`)
   }
 
-  function handlePublish() {
-    run()
+  async function handlePublish() {
+    if (
+      (helper.isValid(form?.version) && form!.version > 0) ||
+      (form!.version === 0 && !form?.fieldsUpdatedAt)
+    ) {
+      const { fields } = getFilteredFields(state.fields!)
+
+      // Create a form object with the filtered fields as drafts
+      const formToPublish = {
+        ...form!,
+        drafts: fields
+      }
+
+      await publishForm(formToPublish)
+    }
   }
 
   function handleRename() {

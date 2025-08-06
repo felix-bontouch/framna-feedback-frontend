@@ -9,7 +9,7 @@ import {
   Variable
 } from '@heyform-inc/shared-types-enums'
 
-import { apollo } from '@/utils'
+import { apollo, sanitizeFormDrafts } from '@/utils'
 
 import {
   COMPLETE_SUBMISSION_GQL,
@@ -32,7 +32,7 @@ import {
   MOVE_FORM_TO_TRASH_GQL,
   OPEN_FORM_GQL,
   PUBLIC_FORM_GQL,
-  PUBLISH_FORM_SQL,
+  PUBLISH_FORM_GQL,
   RESTORE_FORM_GQL,
   SEARCH_FORM_GQL,
   TEMPLATES_GQL,
@@ -227,19 +227,31 @@ export class FormService {
   }
 
   static updateFormSchemas(input: { formId: string; drafts: AnyMap[]; version: number }) {
+    // Sanitize drafts to match GraphQL schema requirements
+    const sanitizedDrafts = sanitizeFormDrafts(input.drafts)
+
     return apollo.mutate({
       mutation: UPDATE_FORM_SCHEMAS_GQL,
       variables: {
-        input
+        input: {
+          ...input,
+          drafts: sanitizedDrafts
+        }
       }
     })
   }
 
   static publishForm(input: { formId: string; drafts: AnyMap[]; version: number }) {
+    // Sanitize drafts to match GraphQL schema requirements
+    const sanitizedDrafts = sanitizeFormDrafts(input.drafts)
+
     return apollo.mutate({
-      mutation: PUBLISH_FORM_SQL,
+      mutation: PUBLISH_FORM_GQL,
       variables: {
-        input
+        input: {
+          ...input,
+          drafts: sanitizedDrafts
+        }
       }
     })
   }

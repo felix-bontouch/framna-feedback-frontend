@@ -1,7 +1,7 @@
 import { Auth, FormGuard, Team } from '@decorator'
 import { FormDetailInput, FormType, MobileFormType, PublicFormType } from '@graphql'
 import { date } from '@heyform-inc/utils'
-import { FormModel, TeamModel } from '@model'
+import { TeamModel } from '@model'
 import { Args, Query, Resolver } from '@nestjs/graphql'
 import { FormService, MobileTransformerService, SubmissionService } from '@service'
 
@@ -16,22 +16,33 @@ export class FormDetailResolver {
 
   @Query(returns => FormType)
   @FormGuard()
-  async formDetail(
-    @Team() team: TeamModel,
-    @Args('input') input: FormDetailInput
-  ): Promise<FormModel> {
+  async formDetail(@Team() team: TeamModel, @Args('input') input: FormDetailInput): Promise<any> {
     const [form, submissionCount] = await Promise.all([
       this.formService.findById(input.formId),
       this.submissionService.count({ formId: input.formId })
     ])
 
-    //@ts-ignore
-    form.updatedAt = date(form.get('updatedAt')).unix()
+    // Convert to plain object to ensure virtual fields are included
+    const formObject: any = form.toObject({ virtuals: true })
 
-    //@ts-ignore
-    form.submissionCount = submissionCount
+    // Add computed fields
+    formObject.updatedAt = date(form.get('updatedAt')).unix()
+    formObject.submissionCount = submissionCount
 
-    return form
+    // Debug logging for AI forms
+    console.log('🔍 DEBUG: formDetail response for', input.formId, {
+      hasDrafts: !!formObject.drafts,
+      draftsLength: formObject.drafts?.length,
+      hasFields: !!formObject.fields,
+      fieldsLength: formObject.fields?.length,
+      version: formObject.version,
+      canPublish: formObject.canPublish,
+      isDraft: formObject.isDraft,
+      has_drafts: !!form._drafts,
+      _draftsLength: form._drafts?.length
+    })
+
+    return formObject
   }
 
   @Query(returns => PublicFormType)

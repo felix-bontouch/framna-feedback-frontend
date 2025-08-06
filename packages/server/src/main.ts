@@ -14,6 +14,30 @@ import { Logger, hbs } from '@utils'
 import { AppModule } from './app.module'
 import { AllExceptionsFilter } from './common/filter'
 
+// Register TypeScript path mappings for compiled code
+const tsConfigPaths = require('tsconfig-paths')
+const path = require('path')
+
+tsConfigPaths.register({
+  baseUrl: path.join(__dirname, '..'),
+  paths: {
+    '@decorator': ['dist/common/decorator'],
+    '@graphql': ['dist/common/graphql'],
+    '@guard': ['dist/common/guard'],
+    '@dto': ['dist/common/dto'],
+    '@interceptor': ['dist/common/interceptor'],
+    '@middleware': ['dist/common/middleware'],
+    '@config': ['dist/config'],
+    '@environments': ['dist/environments'],
+    '@controller': ['dist/controller'],
+    '@model': ['dist/model'],
+    '@resolver': ['dist/resolver'],
+    '@service': ['dist/service'],
+    '@schedule': ['dist/schedule'],
+    '@utils': ['dist/utils']
+  }
+})
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: false

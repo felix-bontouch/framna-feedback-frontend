@@ -48,11 +48,14 @@ const validator = async (rule: any, value: any) => {
 function getPayload(
   kind?: FieldKindEnum,
   choices: Choice[] = [],
-  allowMultiple = false
+  allowMultiple = false,
+  fieldId?: string
 ): LogicPayload {
   const payload: any = {
     id: nanoid(12),
-    condition: {},
+    condition: {
+      ref: fieldId
+    },
     action: {
       kind: ActionEnum.NAVIGATE
     }
@@ -86,9 +89,15 @@ function getPayload(
   if (FieldKindEnum.LEGAL_TERMS === kind) {
     payload.condition.expected = true
   } else if (FieldKindEnum.YES_NO === kind) {
-    payload.condition.expected = choices[0]?.id
+    if (choices && choices.length > 0 && choices[0]?.id) {
+      payload.condition.expected = choices[0].id
+    }
   } else if (FieldKindEnum.MULTIPLE_CHOICE === kind || FieldKindEnum.PICTURE_CHOICE === kind) {
-    payload.condition.expected = allowMultiple ? [choices[0]?.id] : choices[0]?.id
+    if (choices && choices.length > 0 && choices[0]?.id) {
+      // For multiple choice, default to single selection for "is" comparison
+      // Multi-select will be used for "contains" comparisons
+      payload.condition.expected = choices[0].id
+    }
   }
 
   return payload
@@ -173,7 +182,8 @@ export const PayloadList: FC<PayloadListProps> = ({
             getPayload(
               currentField?.kind,
               currentField?.properties?.choices,
-              currentField?.properties?.allowMultiple
+              currentField?.properties?.allowMultiple,
+              currentField?.id
             )
           )
         }

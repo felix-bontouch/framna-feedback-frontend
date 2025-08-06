@@ -1,5 +1,5 @@
 import { FieldKindEnum, LogicCondition } from '@heyform-inc/shared-types-enums'
-import { type FC, useCallback, useMemo, useState } from 'react'
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { helper } from '@heyform-inc/utils'
@@ -66,6 +66,8 @@ const SingleChoiceCondition: FC<DefaultProps & { field: FormFieldType }> = ({
   onComparisonChange,
   onExpectedChange
 }) => {
+  const choices = (field.properties?.choices || []) as AnyMap[]
+
   return (
     <>
       <Select
@@ -77,8 +79,9 @@ const SingleChoiceCondition: FC<DefaultProps & { field: FormFieldType }> = ({
       />
       <Select
         className="flex-1"
-        options={(field.properties?.choices || []) as AnyMap[]}
+        options={choices}
         valueKey="id"
+        labelKey="label"
         value={value?.expected}
         onChange={onExpectedChange}
       />
@@ -92,35 +95,71 @@ const MultipleChoiceCondition: FC<DefaultProps & { field: FormFieldType }> = ({
   onComparisonChange,
   onExpectedChange
 }) => {
-  const MemoSelect = useMemo(() => {
-    if (field.properties?.allowMultiple && SINGLE_CHOICE_CONDITIONS.includes(value?.comparison)) {
-      const currValue = helper.isArray(value?.expected)
-        ? value?.expected
-        : [value?.expected].filter(helper.isValid)
+  const choices = (field.properties?.choices || []) as AnyMap[]
 
-      return (
-        <Select.Multi
-          className="flex-1"
-          options={(field.properties?.choices || []) as AnyMap[]}
-          valueKey="id"
-          value={currValue}
-          onChange={onExpectedChange}
-        />
-      )
+  // Use multi-select only for "contains" and "does_not_contain" when field allows multiple
+  // Fix: Ensure we're checking the comparison value correctly
+  const useMultiSelect = Boolean(
+    field.properties?.allowMultiple === true &&
+      (value?.comparison === 'contains' || value?.comparison === 'does_not_contain')
+  )
+
+  // Prepare the current value based on selection mode
+  const currValue = useMemo(() => {
+    // Debug logging to understand the issue
+    console.log('MultipleChoiceCondition debug:', {
+      comparison: value?.comparison,
+      expected: value?.expected,
+      expectedType: typeof value?.expected,
+      expectedIsArray: helper.isArray(value?.expected),
+      useMultiSelect,
+      allowMultiple: field.properties?.allowMultiple,
+      choices: choices.map(c => ({ id: c.id, label: c.label }))
+    })
+
+    if (useMultiSelect) {
+      // For multi-select, ensure value is an array
+      if (!value?.expected) return []
+      return helper.isArray(value.expected) ? value.expected : [value.expected]
+    } else {
+      // For single-select, ensure value is a single value (not an array)
+      if (!value?.expected) return undefined
+
+      // If value.expected is an array but we're in single-select mode
+      if (helper.isArray(value.expected)) {
+        console.warn('Single-select received array value:', value.expected)
+        // Return the first item or undefined
+        return value.expected.length > 0 ? value.expected[0] : undefined
+      }
+
+      // Check if value.expected is the choices array itself
+      if (value.expected === choices) {
+        console.error('value.expected is the choices array itself!')
+        return undefined
+      }
+
+      // Return the value as-is if it's already a single value
+      return value.expected
     }
+  }, [useMultiSelect, value?.expected, choices])
 
-    const currValue = helper.isValidArray(value?.expected) ? value!.expected[0] : value?.expected
+  // Handle comparison change
+  const handleComparisonChange = useCallback(
+    (newComparison: any) => {
+      onComparisonChange(newComparison)
 
-    return (
-      <Select
-        className="flex-1"
-        options={(field.properties?.choices || []) as AnyMap[]}
-        valueKey="id"
-        value={currValue}
-        onChange={onExpectedChange}
-      />
-    )
-  }, [field.properties?.allowMultiple, onExpectedChange, value])
+      // Clear value when switching between single/multi select modes
+      const willUseMultiSelect =
+        field.properties?.allowMultiple &&
+        (newComparison === 'contains' || newComparison === 'does_not_contain')
+
+      if (willUseMultiSelect !== useMultiSelect && onExpectedChange) {
+        // Clear the value when switching modes to avoid confusion
+        onExpectedChange(willUseMultiSelect ? [] : undefined)
+      }
+    },
+    [field.properties?.allowMultiple, useMultiSelect, onComparisonChange, onExpectedChange]
+  )
 
   return (
     <>
@@ -129,9 +168,27 @@ const MultipleChoiceCondition: FC<DefaultProps & { field: FormFieldType }> = ({
         options={MULTIPLE_CHOICE_CONDITIONS}
         value={value?.comparison}
         multiLanguage
-        onChange={onComparisonChange}
+        onChange={handleComparisonChange}
       />
-      {MemoSelect}
+      {useMultiSelect ? (
+        <Select.Multi
+          className="flex-1"
+          options={choices}
+          valueKey="id"
+          labelKey="label"
+          value={currValue}
+          onChange={onExpectedChange}
+        />
+      ) : (
+        <Select
+          className="flex-1"
+          options={choices}
+          valueKey="id"
+          labelKey="label"
+          value={currValue}
+          onChange={onExpectedChange}
+        />
+      )}
     </>
   )
 }
@@ -204,6 +261,12 @@ export default function Condition({ field, value: rawValue, onChange }: Conditio
   const { t } = useTranslation()
   const [value, setValue] = useState<LogicCondition>(rawValue!)
 
+  useEffect(() => {
+    if (rawValue) {
+      setValue(rawValue)
+    }
+  }, [rawValue])
+
   const handleChange = useCallback(
     (newValue: any) => {
       setValue(newValue)
@@ -233,6 +296,9 @@ export default function Condition({ field, value: rawValue, onChange }: Conditio
       case FieldKindEnum.EMAIL:
       case FieldKindEnum.PHONE_NUMBER:
       case FieldKindEnum.URL:
+      case FieldKindEnum.FULL_NAME:
+      case FieldKindEnum.ADDRESS:
+      case FieldKindEnum.COUNTRY:
         return (
           <TextCondition
             value={value}
