@@ -130,9 +130,11 @@ export class FormService {
     })
   }
 
-  async findAllByFieldLength(maxLength = 2) {
+  async findExceedsMaxFields(maxLength: number): Promise<FormModel[]> {
     return this.formModel.find({
-      $where: `this.fields.length <= ${maxLength}`
+      $expr: {
+        $lte: [{ $size: '$fields' }, maxLength]
+      }
     })
   }
 

@@ -11,7 +11,7 @@ import { date, nanoid } from '@heyform-inc/utils'
 })
 export class TeamModel extends Document {
   @Prop({ default: () => nanoid(8) })
-  _id: string
+  declare _id: string
 
   @Prop({ required: true })
   name: string

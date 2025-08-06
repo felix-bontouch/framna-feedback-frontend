@@ -91,7 +91,7 @@ export class RedisService {
 
   public hdel({ key, field }: HdelOptions): Promise<number> {
     if (field) {
-      return this.redis.hdel(key, field as KeyType)
+      return this.redis.hdel(key, ...(Array.isArray(field) ? field : [field]))
     }
     return this.del(key)
   }

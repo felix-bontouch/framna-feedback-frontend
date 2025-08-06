@@ -198,6 +198,12 @@ export const UPDATE_WORKSPACE_MEMBER_GQL = gql`
   }
 `
 
+export const BULK_UPDATE_FORMS_GQL = gql`
+  mutation bulkUpdateForms($input: BulkUpdateFormsInput!) {
+    bulkUpdateForms(input: $input)
+  }
+`
+
 export const JOIN_WORKSPACE_GQL = gql`
   mutation joinTeam($input: JoinTeamInput!) {
     joinTeam(input: $input)

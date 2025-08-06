@@ -7,7 +7,7 @@ import { nanoid } from '@heyform-inc/utils'
 @Schema()
 export class BrandKitModel extends Document {
   @Prop({ default: () => nanoid(8) })
-  _id: string
+  declare _id: string
 
   @Prop({ required: true, index: true })
   teamId: string

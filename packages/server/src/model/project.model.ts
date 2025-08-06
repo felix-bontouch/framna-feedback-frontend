@@ -8,7 +8,7 @@ import { nanoid } from '@heyform-inc/utils'
 })
 export class ProjectModel extends Document {
   @Prop({ default: () => nanoid(8) })
-  _id: string
+  declare _id: string
 
   @Prop({ required: true, index: true })
   teamId: string

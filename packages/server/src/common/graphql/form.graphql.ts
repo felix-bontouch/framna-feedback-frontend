@@ -268,7 +268,7 @@ class FormChildFieldInput extends SharedFormFieldInput {
   id: string
 
   @Field(type => String)
-  kind: FieldKindEnum
+  declare kind: FieldKindEnum
 
   @Field(type => LayoutInput, { nullable: true })
   layout?: Layout
@@ -280,10 +280,10 @@ export class FormFieldInput extends SharedFormFieldInput {
   id: string
 
   @Field(type => String)
-  kind: FieldKindEnum
+  declare kind: FieldKindEnum
 
   @Field(type => PropertyInput, { nullable: true })
-  properties?: Property
+  declare properties?: Property
 
   @Field(type => LayoutInput, { nullable: true })
   layout?: Layout
@@ -1183,7 +1183,7 @@ export class PublicFormType extends FormType {
   fields: FormField[]
 
   @Field(type => GraphQLJSONObject, { nullable: true })
-  translations: FormModel['translations']
+  declare translations: FormModel['translations']
 
   @Field(type => GraphQLJSONObject, { nullable: true })
   integrations?: Record<string, string>
@@ -1298,4 +1298,78 @@ export class ImportFormFromJSONInput {
 
   @Field()
   formJson: string
+}
+
+@InputType()
+export class BulkUpdateFormsInput {
+  @Field(type => [String])
+  @IsArray()
+  formIds: string[]
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  targetProjectId?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  enableClosedMessage?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  closedFormTitle?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  closedFormDescription?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  enableEmailNotification?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  requirePassword?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  password?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  enableQuotaLimit?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  quotaLimit?: number
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  enableIpLimit?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  ipLimitCount?: number
+
+  @Field({ nullable: true })
+  @IsOptional()
+  locale?: string
+
+  @Field(type => [String], { nullable: true })
+  @IsOptional()
+  @IsArray()
+  languages?: string[]
 }

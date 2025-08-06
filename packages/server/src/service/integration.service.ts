@@ -3,9 +3,10 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Queue } from 'bull'
 import { Model } from 'mongoose'
-import * as apps from 'src/apps'
 
 import { FormModel, IntegrationModel, IntegrationStatusEnum } from '@model'
+
+import * as apps from '../apps'
 
 @Injectable()
 export class IntegrationService {

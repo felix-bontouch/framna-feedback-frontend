@@ -8,7 +8,7 @@ import { nanoid } from '@heyform-inc/utils'
 })
 export class AppCodeModel extends Document {
   @Prop({ default: () => nanoid(20) })
-  _id: string
+  declare _id: string
 
   @Prop({
     type: String,

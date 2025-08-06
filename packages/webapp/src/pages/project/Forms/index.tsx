@@ -39,32 +39,34 @@ export default function ProjectForms() {
   }
 
   return (
-    <Async
-      fetch={fetch}
-      refreshDeps={[projectId]}
-      loader={
+    <>
+      <Async
+        fetch={fetch}
+        refreshDeps={[projectId]}
+        loader={
+          <div className="divide-accent-light divide-y [&_:first-of-type]:border-t-0">
+            <Repeat count={3}>
+              <FormItem.Skeleton />
+            </Repeat>
+          </div>
+        }
+        emptyRender={() => (
+          <div className="border-accent-light mt-4 flex flex-1 items-center justify-center rounded-lg border border-dashed py-36 shadow-sm">
+            <EmptyState
+              headline={t('project.forms.headline')}
+              subHeadline={t('dashboard.pickTemplate')}
+              buttonTitle={t('form.creation.title')}
+              onClick={() => openModal('CreateFormModal')}
+            />
+          </div>
+        )}
+      >
         <div className="divide-accent-light divide-y [&_:first-of-type]:border-t-0">
-          <Repeat count={3}>
-            <FormItem.Skeleton />
-          </Repeat>
+          {forms.map(f => (
+            <FormItem key={f.id} form={f} onChange={handleChange} />
+          ))}
         </div>
-      }
-      emptyRender={() => (
-        <div className="border-accent-light mt-4 flex flex-1 items-center justify-center rounded-lg border border-dashed py-36 shadow-sm">
-          <EmptyState
-            headline={t('project.forms.headline')}
-            subHeadline={t('dashboard.pickTemplate')}
-            buttonTitle={t('form.creation.title')}
-            onClick={() => openModal('CreateFormModal')}
-          />
-        </div>
-      )}
-    >
-      <div className="divide-accent-light divide-y [&_:first-of-type]:border-t-0">
-        {forms.map(f => (
-          <FormItem key={f.id} form={f} onChange={handleChange} />
-        ))}
-      </div>
-    </Async>
+      </Async>
+    </>
   )
 }

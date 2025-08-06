@@ -17,7 +17,7 @@ export default function CreateWithAIModel({ onBack }: TemplatesModelProps) {
   const router = useRouter()
   const { workspaceId, projectId } = useParam()
   const [rcForm] = Form.useForm()
-  const { closeModal } = useModal()
+  const { close } = useModal('CreateFormModal')
 
   const examples = useMemo(
     () => Array.from({ length: 3 }).map((_, index) => t(`form.ai.topic.examples.${index}`)),
@@ -30,7 +30,7 @@ export default function CreateWithAIModel({ onBack }: TemplatesModelProps) {
       ...values
     })
 
-    closeModal('CreateFormModal')
+    close()
     router.push(`/workspace/${workspaceId}/project/${projectId}/form/${formId}/create`)
   }
 
