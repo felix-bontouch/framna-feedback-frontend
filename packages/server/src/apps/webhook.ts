@@ -5,7 +5,7 @@ export default {
   name: 'Webhook',
   description:
     "With webhooks integration, you can send every submission straight to any URL as soon as it's submitted.",
-  icon: '/static/webhook.png',
+  icon: 'public/static/webhook.png',
   settings: [
     {
       type: 'url',

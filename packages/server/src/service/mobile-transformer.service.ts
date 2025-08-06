@@ -9,6 +9,21 @@ export class MobileTransformerService {
    * while preserving all functional data needed for form rendering and logic
    */
   transformFormForMobile(form: any): MobileFormType {
+    // Handle _drafts field - it's a string that needs to be parsed
+    let fieldsToUse = form.fields
+    if (!fieldsToUse && form._drafts) {
+      try {
+        if (typeof form._drafts === 'string') {
+          fieldsToUse = JSON.parse(form._drafts)
+        } else {
+          fieldsToUse = form._drafts
+        }
+      } catch (e) {
+        console.error('Failed to parse _drafts:', e)
+        fieldsToUse = []
+      }
+    }
+
     return {
       // Core identifiers
       id: form.id,
@@ -26,7 +41,7 @@ export class MobileTransformerService {
       settings: this.transformSettingsForMobile(form.settings),
 
       // Form structure and logic
-      fields: this.transformFieldsForMobile(form.fields || form._drafts || []),
+      fields: this.transformFieldsForMobile(fieldsToUse || []),
       hiddenFields: form.hiddenFields || [],
       logics: form.logics || [],
       variables: form.variables || [],

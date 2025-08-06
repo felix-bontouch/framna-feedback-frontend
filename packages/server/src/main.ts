@@ -16,10 +16,10 @@ import { AllExceptionsFilter } from './common/filter'
 
 // Register TypeScript path mappings for compiled code
 const tsConfigPaths = require('tsconfig-paths')
-const path = require('path')
+const pathModule = require('path')
 
 tsConfigPaths.register({
-  baseUrl: path.join(__dirname, '..'),
+  baseUrl: pathModule.join(__dirname, '..'),
   paths: {
     '@decorator': ['dist/common/decorator'],
     '@graphql': ['dist/common/graphql'],

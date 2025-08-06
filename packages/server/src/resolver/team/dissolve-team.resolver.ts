@@ -4,13 +4,12 @@ import { Auth, Team, TeamGuard, User } from '@decorator'
 import { DissolveTeamInput } from '@graphql'
 import { TeamModel, UserModel } from '@model'
 import { Args, Mutation, Resolver } from '@nestjs/graphql'
-import { AuthService, FormService, MailService, SubmissionService, TeamService } from '@service'
+import { FormService, MailService, SubmissionService, TeamService } from '@service'
 
 @Resolver()
 @Auth()
 export class DissolveTeamResolver {
   constructor(
-    private readonly authService: AuthService,
     private readonly teamService: TeamService,
     private readonly formService: FormService,
     private readonly submissionService: SubmissionService,
@@ -28,12 +27,10 @@ export class DissolveTeamResolver {
       throw new BadRequestException("You don't have permission to dissolve workspace")
     }
 
-    const attemptsKey = `limit:dissolve_team:${team.id}`
-
-    await this.authService.attemptsCheck(attemptsKey, async () => {
-      const key = `verify_dissolve_team:${team.id}`
-      await this.authService.checkVerificationCode(key, input.code)
-    })
+    // Check if user typed "delete" to confirm
+    if (input.code !== 'delete') {
+      throw new BadRequestException('Please type "delete" to confirm workspace deletion')
+    }
 
     await this.teamService.delete(input.teamId)
     await this.teamService.deleteAllMemberInTeam(input.teamId)

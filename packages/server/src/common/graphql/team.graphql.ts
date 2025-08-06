@@ -114,7 +114,6 @@ export class UpdateTeamInput extends TeamDetailInput {
   name?: string
 
   @Field({ nullable: true })
-  @IsUrl()
   @IsOptional()
   avatar?: string
 

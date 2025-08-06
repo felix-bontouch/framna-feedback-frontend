@@ -364,8 +364,10 @@ Consider:
         mappedField.validations = field.validations
       }
 
-      if (field.properties) {
-        mappedField.properties = field.properties
+      // Initialize properties with verticalAlignment (required by frontend)
+      mappedField.properties = {
+        verticalAlignment: true,
+        ...(field.properties || {})
       }
 
       // Handle choice fields
@@ -377,13 +379,32 @@ Consider:
         'custom_checkbox',
         'dropdown'
       ]
-      if (choiceFieldTypes.includes(field.kind) && field.choices) {
+      // Check for choices in both field.choices (legacy) and field.properties.choices (current)
+      const choices = field.choices || field.properties?.choices
+      if (choiceFieldTypes.includes(field.kind) && choices) {
         mappedField.properties = {
           ...mappedField.properties,
-          choices: field.choices.map((choice: any) => ({
+          choices: choices.map((choice: any) => ({
             id: nanoid(12),
             label: typeof choice === 'string' ? choice : choice.label
           }))
+        }
+      }
+
+      // Handle YES_NO fields specifically - they always need Yes/No choices
+      if (mappedField.kind === FieldKindEnum.YES_NO) {
+        mappedField.properties = {
+          ...mappedField.properties,
+          choices: [
+            {
+              id: nanoid(12),
+              label: 'Yes'
+            },
+            {
+              id: nanoid(12),
+              label: 'No'
+            }
+          ]
         }
       }
 
@@ -397,7 +418,10 @@ Consider:
         id: nanoid(12),
         title: ['Thank you!'],
         description: ['Thanks for completing this form. We appreciate your response.'],
-        kind: FieldKindEnum.THANK_YOU
+        kind: FieldKindEnum.THANK_YOU,
+        properties: {
+          verticalAlignment: true
+        }
       })
     }
 

@@ -100,3 +100,10 @@ If login or signup spins indefinitely:
 ### Debugging Login Issues
 Use the debug script: `./scripts/debug-login.sh`
 Or check browser console with: `framnaDebug.enableVerbose()`
+
+### Port Already in Use Error
+If you see "Error: listen EADDRINUSE: address already in use 0.0.0.0:9157":
+1. You may have VS Code debug session running alongside `pnpm dev`
+2. **Important**: Don't run VS Code debug and `pnpm dev` simultaneously
+3. Kill all processes: `pkill -f "nest start"`
+4. Use either `pnpm dev` for normal development OR VS Code debug for debugging, not both

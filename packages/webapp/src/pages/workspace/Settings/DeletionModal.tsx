@@ -1,12 +1,11 @@
-import { useBoolean, useRequest } from 'ahooks'
-import { useEffect } from 'react'
+import { useBoolean } from 'ahooks'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { WorkspaceService } from '@/services'
 import { useRouter } from '@/utils'
 
 import { Form, Input, Modal, useToast } from '@/components'
-import { useModal, useUserStore, useWorkspaceStore } from '@/store'
+import { useModal, useWorkspaceStore } from '@/store'
 
 export default function WorkspaceDeletionModal() {
   const { t } = useTranslation()
@@ -14,46 +13,25 @@ export default function WorkspaceDeletionModal() {
   const toast = useToast()
   const router = useRouter()
 
-  const { user } = useUserStore()
   const { deleteWorkspace } = useWorkspaceStore()
 
   const { isOpen, payload, onOpenChange } = useModal('WorkspaceDeletionModal')
   const [loading, { set }] = useBoolean(false)
 
-  const { run } = useRequest(
-    async () => {
-      await WorkspaceService.dissolveCode(payload.id)
-    },
-    {
-      manual: true,
-      refreshDeps: [payload?.id],
-      onSuccess: () => {
-        toast({
-          title: t('settings.deletion.sentSuccess'),
-          message: t('resetPassword.subHeadline', { email: user?.email })
-        })
-      },
-      onError: err => {
-        toast({
-          title: t('settings.deletion.sentFailed'),
-          message: err.message
-        })
-      }
-    }
-  )
-
   async function fetch(values: any) {
+    if (values.code !== 'delete') {
+      toast({
+        title: t('workspace.delete.invalidCode'),
+        message: t('workspace.delete.invalidCodeMessage')
+      })
+      return
+    }
+
     await WorkspaceService.dissolve(payload.id, values.code)
 
     deleteWorkspace(payload.id)
     router.replace('/')
   }
-
-  useEffect(() => {
-    if (payload) {
-      run()
-    }
-  }, [payload])
 
   return (
     <Modal.Simple
@@ -97,26 +75,19 @@ export default function WorkspaceDeletionModal() {
       >
         <Form.Item
           name="code"
-          label={
-            <Trans
-              t={t}
-              i18nKey="settings.deletion.code.label"
-              values={{
-                email: user?.email
-              }}
-              components={{
-                strong: <strong />
-              }}
-            />
-          }
+          label={t('workspace.delete.code.label')}
           rules={[
             {
               required: true,
-              message: t('settings.deletion.code.required')
+              message: t('workspace.delete.code.required')
+            },
+            {
+              pattern: /^delete$/,
+              message: t('workspace.delete.code.invalid')
             }
           ]}
         >
-          <Input autoComplete="off" />
+          <Input autoComplete="off" placeholder={t('workspace.delete.code.placeholder')} />
         </Form.Item>
       </Form.Simple>
     </Modal.Simple>

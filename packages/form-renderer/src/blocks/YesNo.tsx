@@ -26,14 +26,14 @@ export const YesNo: FC<BlockProps> = ({ field, ...restProps }) => {
   ]
 
   function getValues(values: any) {
-    return values.input ? values.input[0] : undefined
+    return values.input
   }
 
   return (
     <Block className="heyform-yes-no" field={field} {...restProps}>
       <Form
         initialValues={{
-          input: [state.values[field.id]].filter(isNotNil)
+          input: state.values[field.id]
         }}
         autoSubmit={true}
         isSubmitShow={false}

@@ -1,4 +1,3 @@
-import { APP_HOMEPAGE_URL } from '@environments'
 import { AppType } from '@graphql'
 import { Query, Resolver } from '@nestjs/graphql'
 import { AppService } from '@service'
@@ -11,7 +10,7 @@ export class AppsResolver {
   async apps(): Promise<AppType[]> {
     return this.appService.findAll().map(i => ({
       ...i,
-      icon: APP_HOMEPAGE_URL + i.icon
+      icon: i.icon.startsWith('http') ? i.icon : `http://localhost:3000${i.icon}`
     }))
   }
 }

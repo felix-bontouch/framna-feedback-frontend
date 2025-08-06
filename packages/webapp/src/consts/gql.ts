@@ -52,12 +52,6 @@ export const UPDATE_WORKSPACE_GQL = gql`
   }
 `
 
-export const DISSOLVE_WORKSPACE_CODE_GQL = gql`
-  query dissolveTeamCode($input: TeamDetailInput!) {
-    dissolveTeamCode(input: $input)
-  }
-`
-
 export const DISSOLVE_WORKSPACE_GQL = gql`
   mutation dissolveTeam($input: DissolveTeamInput!) {
     dissolveTeam(input: $input)

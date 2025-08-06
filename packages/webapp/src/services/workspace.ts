@@ -4,7 +4,6 @@ import {
   ADD_CUSTOM_DOMAIN_GQL,
   CREATE_BRAND_KIT_GQL,
   CREATE_WORKSPACE_GQL,
-  DISSOLVE_WORKSPACE_CODE_GQL,
   DISSOLVE_WORKSPACE_GQL,
   EXPORT_WORKSPACE_DATA_GQL,
   INVITE_MEMBERS_GQL,
@@ -55,18 +54,6 @@ export class WorkspaceService {
           ...updates
         }
       }
-    })
-  }
-
-  static dissolveCode(teamId: string) {
-    return apollo.query({
-      query: DISSOLVE_WORKSPACE_CODE_GQL,
-      variables: {
-        input: {
-          teamId
-        }
-      },
-      fetchPolicy: 'network-only'
     })
   }
 
