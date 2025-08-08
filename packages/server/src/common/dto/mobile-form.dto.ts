@@ -18,13 +18,13 @@ export class MobileFieldsQueryDto {
 }
 
 export class ClientInfoDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  ip: string
+  ip?: string
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  userAgent: string
+  userAgent?: string
 
   @IsString()
   @IsNotEmpty()

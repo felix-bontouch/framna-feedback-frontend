@@ -57,7 +57,7 @@ export class ExportFileService {
       }
 
       for (const selectedHiddenField of selectedHiddenFields) {
-        const hiddenFieldValue = submission.hiddenFields.find(
+        const hiddenFieldValue = (submission.hiddenFields || []).find(
           hiddenField => hiddenField.id === selectedHiddenField.id
         )?.value
 
@@ -65,7 +65,7 @@ export class ExportFileService {
       }
 
       record[START_DATE_KEY] = submission.startAt ? unixDate(submission.startAt!).toISOString() : ''
-      record[SUBMIT_DATE_KEY] = submission.startAt ? unixDate(submission.endAt!).toISOString() : ''
+      record[SUBMIT_DATE_KEY] = submission.endAt ? unixDate(submission.endAt!).toISOString() : ''
 
       records.push(record)
     }

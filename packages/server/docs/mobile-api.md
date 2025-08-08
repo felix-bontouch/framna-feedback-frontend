@@ -148,7 +148,9 @@ Submit form responses from a mobile application.
 {
   "answers": {
     "field1": "John Doe",
-    "field2": "choice1"
+    "field2": {
+      "value": ["choice1"]
+    }
   },
   "startedAt": 1703123456789,
   "clientInfo": {
@@ -220,6 +222,200 @@ The mobile API supports all Framna field types without visual properties:
 - `signature` - Digital signature
 - `payment` - Payment collection
 
+## Answer Formats
+
+**IMPORTANT:** Each field type requires a specific answer format. Incorrect formats will result in validation errors.
+
+### Text Fields
+**short_text, long_text, email, website**
+```json
+{
+  "fieldId": "Simple text string"
+}
+```
+
+### Multiple Choice / Picture Choice
+**CRITICAL:** Multiple choice fields require an object with a `value` array, NOT a simple string.
+
+**Single selection (allowMultiple: false):**
+```json
+{
+  "fieldId": {
+    "value": ["choiceId1"]
+  }
+}
+```
+
+**Multiple selection (allowMultiple: true):**
+```json
+{
+  "fieldId": {
+    "value": ["choiceId1", "choiceId2", "choiceId3"]
+  }
+}
+```
+
+**With "Other" option (allowOther: true):**
+```json
+{
+  "fieldId": {
+    "value": ["choiceId1"],
+    "other": "Custom text entered by user"
+  }
+}
+```
+
+**Only "Other" selected:**
+```json
+{
+  "fieldId": {
+    "value": [],
+    "other": "Custom text entered by user"
+  }
+}
+```
+
+### Yes/No
+```json
+{
+  "fieldId": true  // or false
+}
+```
+
+### Number
+```json
+{
+  "fieldId": 42
+}
+```
+
+### Rating / Opinion Scale
+```json
+{
+  "fieldId": 5  // Number between 1 and total
+}
+```
+
+### Date
+```json
+{
+  "fieldId": "2024-01-15"  // Format depends on field.properties.format
+}
+```
+
+### Date Range
+```json
+{
+  "fieldId": {
+    "start": "2024-01-15",
+    "end": "2024-01-20"
+  }
+}
+```
+
+### Phone Number
+```json
+{
+  "fieldId": "+1234567890"  // Include country code
+}
+```
+
+### Full Name
+```json
+{
+  "fieldId": {
+    "firstName": "John",
+    "lastName": "Doe"
+  }
+}
+```
+
+### Address
+```json
+{
+  "fieldId": {
+    "address1": "123 Main St",
+    "address2": "Apt 4B",  // Optional
+    "city": "New York",
+    "state": "NY",
+    "zip": "10001",
+    "country": "US"
+  }
+}
+```
+
+### File Upload
+```json
+{
+  "fieldId": {
+    "url": "https://storage.example.com/file.pdf",
+    "name": "document.pdf",
+    "size": 1024000,
+    "type": "application/pdf"
+  }
+}
+```
+
+### Legal Terms
+```json
+{
+  "fieldId": true  // Must be true if required
+}
+```
+
+### Input Table
+```json
+{
+  "fieldId": [
+    {
+      "column1": "value1",
+      "column2": "value2"
+    },
+    {
+      "column1": "value3",
+      "column2": "value4"
+    }
+  ]
+}
+```
+
+### Signature
+```json
+{
+  "fieldId": "data:image/png;base64,iVBORw0KGgoAAAANS..."  // Base64 encoded PNG
+}
+```
+
+### Country
+```json
+{
+  "fieldId": "US"  // ISO 3166-1 alpha-2 country code
+}
+```
+
+## Common Validation Errors
+
+When validation fails, the API returns detailed error information:
+
+```json
+{
+  "statusCode": 400,
+  "message": "Validation failed for field \"Field Title\": Error details",
+  "error": "Bad Request",
+  "field": "fieldId",
+  "fieldTitle": "Field Title",
+  "fieldKind": "multiple_choice"
+}
+```
+
+### Common Errors:
+1. **"This field is required"** - Required field is missing or has incorrect format
+2. **"Multiple choose is not allowed"** - Sent multiple values when allowMultiple is false
+3. **"Cannot select non-specified choices"** - Choice ID doesn't exist in field.properties.choices
+4. **"Other value is not allowed"** - Sent "other" value when allowOther is false
+5. **"The text length must be between X to Y"** - Text length validation failed
+6. **"Please enter a valid email address"** - Email format validation failed
+
 ## Integration Example
 
 ### React Native
@@ -242,6 +438,13 @@ const getForm = async (formId) => {
 // Submit form
 const submitForm = async (formId, answers, category = 'GENERAL') => {
   try {
+    // Example answers object with correct formats:
+    // {
+    //   "textField": "John Doe",
+    //   "multipleChoiceField": { "value": ["choiceId1"] },
+    //   "ratingField": 5,
+    //   "dateField": "2024-01-15"
+    // }
     const response = await axios.post(`${API_BASE}/${formId}`, {
       answers,
       startedAt: Date.now(),
@@ -262,6 +465,27 @@ const submitForm = async (formId, answers, category = 'GENERAL') => {
     console.error('Error submitting form:', error.response?.data);
     throw error;
   }
+};
+
+// Example: Building answers for multiple choice fields
+const buildMultipleChoiceAnswer = (selectedChoices, otherText = null) => {
+  const answer = {
+    value: selectedChoices // Array of choice IDs
+  };
+  if (otherText) {
+    answer.other = otherText;
+  }
+  return answer;
+};
+
+// Usage example
+const answers = {
+  "field1": "John Doe", // Text field
+  "field2": buildMultipleChoiceAnswer(["choice1"]), // Single choice
+  "field3": buildMultipleChoiceAnswer(["choice1", "choice2"]), // Multiple choices
+  "field4": buildMultipleChoiceAnswer(["choice1"], "Custom answer"), // With other
+  "field5": 8, // Rating field
+  "field6": true // Yes/No field
 };
 ```
 
@@ -284,6 +508,14 @@ struct MobileFormAPI {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        // Example answers dictionary with correct formats:
+        // let answers = [
+        //     "textField": "John Doe",
+        //     "multipleChoiceField": ["value": ["choiceId1"]],
+        //     "ratingField": 5,
+        //     "dateField": "2024-01-15"
+        // ]
+        
         let submission = [
             "answers": answers,
             "startedAt": Date().timeIntervalSince1970 * 1000,
@@ -304,7 +536,26 @@ struct MobileFormAPI {
         let (data, _) = try await URLSession.shared.data(for: request)
         return try JSONDecoder().decode(SubmissionResponse.self, from: data)
     }
+    
+    // Helper function to build multiple choice answers
+    static func buildMultipleChoiceAnswer(selectedChoices: [String], otherText: String? = nil) -> [String: Any] {
+        var answer: [String: Any] = ["value": selectedChoices]
+        if let other = otherText {
+            answer["other"] = other
+        }
+        return answer
+    }
 }
+
+// Usage example
+let answers: [String: Any] = [
+    "field1": "John Doe", // Text field
+    "field2": MobileFormAPI.buildMultipleChoiceAnswer(selectedChoices: ["choice1"]), // Single choice
+    "field3": MobileFormAPI.buildMultipleChoiceAnswer(selectedChoices: ["choice1", "choice2"]), // Multiple choices
+    "field4": MobileFormAPI.buildMultipleChoiceAnswer(selectedChoices: ["choice1"], otherText: "Custom answer"), // With other
+    "field5": 8, // Rating field
+    "field6": true // Yes/No field
+]
 ```
 
 ## Best Practices

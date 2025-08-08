@@ -11,18 +11,26 @@ export class MobileTransformerService {
   transformFormForMobile(form: any): MobileFormType {
     // Handle _drafts field - it's a string that needs to be parsed
     let fieldsToUse = form.fields
-    if (!fieldsToUse && form._drafts) {
+
+    // Check if fields is empty or undefined, then use _drafts
+    if ((!fieldsToUse || fieldsToUse.length === 0) && form._drafts) {
+      console.log(`Form ${form.id}: fields empty, using _drafts`)
       try {
         if (typeof form._drafts === 'string') {
           fieldsToUse = JSON.parse(form._drafts)
+          console.log(`Form ${form.id}: parsed ${fieldsToUse?.length || 0} fields from _drafts`)
         } else {
           fieldsToUse = form._drafts
         }
       } catch (e) {
-        console.error('Failed to parse _drafts:', e)
+        console.error(`Form ${form.id}: Failed to parse _drafts:`, e)
+        console.error('_drafts content:', form._drafts?.substring(0, 200))
         fieldsToUse = []
       }
     }
+
+    // Log field status for debugging
+    console.log(`Form ${form.id}: transforming with ${fieldsToUse?.length || 0} fields`)
 
     return {
       // Core identifiers

@@ -1,4 +1,9 @@
-import { CaptchaKindEnum, UNSELECTABLE_FIELD_KINDS } from '@heyform-inc/shared-types-enums'
+import {
+  CaptchaKindEnum,
+  SubmissionCategoryEnum,
+  SubmissionStatusEnum,
+  UNSELECTABLE_FIELD_KINDS
+} from '@heyform-inc/shared-types-enums'
 import { BadRequestException, Injectable } from '@nestjs/common'
 
 import { MobileSubmissionRequestDto } from '@dto'
@@ -15,8 +20,6 @@ import {
 
 @Injectable()
 export class MobileFormService {
-  private cache = new Map<string, any>()
-
   constructor(
     private readonly mobileTransformerService: MobileTransformerService,
     private readonly submissionService: SubmissionService,
@@ -27,24 +30,12 @@ export class MobileFormService {
   ) {}
 
   /**
-   * Transform form for mobile consumption with caching
+   * Transform form for mobile consumption (no caching for real-time updates)
    */
   async transformFormForMobile(form: any): Promise<any> {
-    const cacheKey = `mobile-form:${form.id}:${form.fieldsUpdatedAt || form.updatedAt}`
-
-    // Try to get from cache first
-    const cached = this.cache.get(cacheKey)
-    if (cached) {
-      return cached
-    }
-
-    // Transform using existing service
+    // Transform using existing service without caching
     const transformed = this.mobileTransformerService.transformFormForMobile(form)
-
-    // Cache for 1 hour
-    this.cache.set(cacheKey, transformed)
-    setTimeout(() => this.cache.delete(cacheKey), 3600000)
-
+    console.log(`Form ${form.id}: transformed form with ${transformed.fields?.length || 0} fields`)
     return transformed
   }
 
@@ -101,7 +92,8 @@ export class MobileFormService {
     if (
       form.settings?.enableIpLimit &&
       helper.isValid(form.settings.ipLimitCount) &&
-      form.settings.ipLimitCount > 0
+      form.settings.ipLimitCount > 0 &&
+      submissionDto.clientInfo.ip
     ) {
       await this.submissionIpLimitService.checkIp(form, submissionDto.clientInfo.ip)
     }
@@ -142,49 +134,60 @@ export class MobileFormService {
         value: variableValues[variable.id]
       }))
     } catch (err) {
+      // Provide detailed error information for validation failures
+      if (err.response) {
+        throw new BadRequestException({
+          statusCode: 400,
+          message: `Validation failed for field "${err.response.title || err.response.id}": ${err.message}`,
+          error: 'Bad Request',
+          field: err.response.id,
+          fieldTitle: err.response.title,
+          fieldKind: err.response.kind,
+          value: err.response.value
+        })
+      }
       throw new BadRequestException(err.message || 'Invalid form data')
     }
 
-    // Check for spam if enabled
-    let category = 'INBOX'
-    if (form.settings?.filterSpam) {
-      const isSpam = await this.endpointService.verifySpam({
-        answers,
-        ip: submissionDto.clientInfo.ip
-      })
-      if (isSpam) {
-        category = 'SPAM'
-      }
-    }
-
-    // Use form's default category if submission doesn't specify one
-    const submissionCategory = submissionDto.category || form.settings?.mobileCategory || 'GENERAL'
-
-    // Create submission with extended client info
-    const submissionId = await this.submissionService.create({
+    // Build submission data
+    const submissionData: any = {
       teamId: form.teamId,
       formId: form.id,
-      category: category === 'INBOX' ? submissionCategory : category, // Use mobile category if not spam
       title: form.name,
       answers,
       hiddenFields: submissionDto.hiddenFields || [],
       variables,
       startAt: submissionDto.startedAt,
       endAt: timestamp(),
-      ip: submissionDto.clientInfo.ip,
-      userAgent: submissionDto.clientInfo.userAgent,
-      status: form.settings?.allowArchive ? 'PUBLIC' : 'PRIVATE',
-      // Store extended client info in metadata or as part of the submission
-      metadata: {
-        os: submissionDto.clientInfo.os,
-        osVersion: submissionDto.clientInfo.osVersion,
-        appVersion: submissionDto.clientInfo.appVersion,
-        device: submissionDto.clientInfo.device,
-        deviceId: submissionDto.clientInfo.deviceId,
-        locale: submissionDto.clientInfo.locale,
-        submissionCategory: submissionCategory
+      ip: submissionDto.clientInfo.ip || 'unknown',
+      userAgent: submissionDto.clientInfo.userAgent || 'mobile'
+    }
+
+    // Set status based on archive settings - only set to PRIVATE if archive is explicitly disabled
+    if (form.settings?.allowArchive === false) {
+      submissionData.status = SubmissionStatusEnum.PRIVATE
+    } else {
+      // Default to PUBLIC (matches the model's default)
+      submissionData.status = SubmissionStatusEnum.PUBLIC
+    }
+
+    // TODO: Store extended client info when metadata field is added to model
+    // Extended client info: os, osVersion, appVersion, device, deviceId, locale
+
+    // Check for spam if enabled and set category only if spam
+    if (form.settings?.filterSpam && submissionDto.clientInfo.ip) {
+      const isSpam = await this.endpointService.verifySpam({
+        answers,
+        ip: submissionDto.clientInfo.ip
+      })
+      if (isSpam) {
+        submissionData.category = SubmissionCategoryEnum.SPAM
       }
-    })
+    }
+    // Note: If not spam, category will default to SubmissionCategoryEnum.INBOX in the model
+
+    // Create submission
+    const submissionId = await this.submissionService.create(submissionData)
 
     // Queue background jobs
     this.formReportService.addQueue(form.id)

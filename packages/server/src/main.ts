@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common'
+import { BadRequestException, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import * as cookieParser from 'cookie-parser'
@@ -14,7 +14,7 @@ import { Logger, hbs } from '@utils'
 import { AppModule } from './app.module'
 import { AllExceptionsFilter } from './common/filter'
 
-// Register TypeScript path mappings for compiled code
+// Register TypeScript path mappings for compiled code - MUST be first!
 const tsConfigPaths = require('tsconfig-paths')
 const pathModule = require('path')
 
@@ -46,7 +46,29 @@ async function bootstrap() {
   // Verify all params
   app.useGlobalPipes(
     new ValidationPipe({
-      forbidUnknownValues: false
+      forbidUnknownValues: false,
+      transform: true,
+      // whitelist: true, // Removed - this was stripping GraphQL fields that don't have class-validator decorators
+      validationError: {
+        target: true,
+        value: true
+      },
+      exceptionFactory: errors => {
+        const messages = errors.map(error => {
+          const constraints = Object.values(error.constraints || {})
+          return {
+            field: error.property,
+            message: constraints[0] || 'Validation failed',
+            value: error.value,
+            constraints: error.constraints
+          }
+        })
+        return new BadRequestException({
+          statusCode: 400,
+          message: 'Validation failed',
+          errors: messages
+        })
+      }
     })
   )
 

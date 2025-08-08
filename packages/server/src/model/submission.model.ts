@@ -19,6 +19,9 @@ export enum ExportSubmissionFormatEnum {
   timestamps: true
 })
 export class SubmissionModel extends Document {
+  @Prop({ index: true })
+  teamId?: string
+
   @Prop({ required: true, index: true })
   formId: string
 
@@ -54,7 +57,6 @@ export class SubmissionModel extends Document {
   @Prop()
   userAgent: UserAgent
 
-  @Prop()
   @Prop({
     type: Number,
     required: true,
